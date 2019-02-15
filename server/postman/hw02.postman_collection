@@ -1,0 +1,794 @@
+{
+	"info": {
+		"_postman_id": "a6008d46-c21f-472f-9e1b-842e03575710",
+		"name": "hw02 Copy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "HTTPS user new Johny",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cb11eddf-1a74-405f-9afc-b4fd78e96cfb",
+						"exec": [
+							"if (pm.response.code === 200 ) {",
+							"    pm.environment.set(\"email\", JSON.parse(request.data).email);",
+							"    pm.environment.set(\"password\", JSON.parse(request.data).password);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Johny\",  \n\t\"email\": \"johny@test.com\",\n\t\"address\": \"115th Yellow Submarine, Pacific\",\n\t\"password\": \"johnyspassword\"\n}"
+				},
+				"url": {
+					"raw": "{{url.https}}/users",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS user new Ann",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bca5e1d-c3c0-4971-b66e-e7f0cdb3bfe1",
+						"exec": [
+							"if (pm.response.code === 200 ) {",
+							"    pm.environment.set(\"email\", JSON.parse(request.data).email);",
+							"    pm.environment.set(\"password\", JSON.parse(request.data).password);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d5d1fe48-bcd2-4d18-85f7-b9370fb85a7f",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Ann\",  \n\t\"email\": \"ann@test.com\",\n\t\"address\": \"120th Pirple Cloud, Wonderland\",\n\t\"password\": \"annspassword\"\n}"
+				},
+				"url": {
+					"raw": "{{url.https}}/users",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS user by email",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{tokenId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url.https}}/users?email={{email}}",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"users"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "{{email}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS user amend data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0bb43027-c891-42b3-8e3c-f86b3d3c5985",
+						"exec": [
+							"if (pm.response.code === 200 ) {",
+							"   pm.environment.set(\"password\", JSON.parse(request.data).password);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{tokenId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"ann@test.com\",\n    \"name\": \"Ann\",\n    \"address\": \"666th Hell Road, Down Under\",\n    \"password\": \"annspasswordRenewed\"\n}"
+				},
+				"url": {
+					"raw": "{{url.https}}/users",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS user by email",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{tokenId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url.https}}/users?email={{email}}",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"users"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "{{email}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS token new",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "674249d9-2993-4318-9750-7c740efdff8b",
+						"exec": [
+							"if (pm.response.code === 200 ) {",
+							"    pm.environment.set(\"tokenId\", JSON.parse(responseBody).id);",
+							"    pm.environment.set(\"email\", JSON.parse(request.data).email);",
+							"}",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3c3537a2-b895-407a-8b91-be4f070c787f",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\" : \"{{email}}\",\n\t\"password\": \"{{password}}\"\n}"
+				},
+				"url": {
+					"raw": "{{url.https}}/tokens",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"tokens"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS token object",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "674249d9-2993-4318-9750-7c740efdff8b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3c3537a2-b895-407a-8b91-be4f070c787f",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url.https}}/tokens?id={{tokenId}}",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"tokens"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{tokenId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS token extend",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "674249d9-2993-4318-9750-7c740efdff8b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3c3537a2-b895-407a-8b91-be4f070c787f",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\":\"{{tokenId}}\",\n\t\"extend\":true\n}"
+				},
+				"url": {
+					"raw": "{{url.https}}/tokens",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"tokens"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "674249d9-2993-4318-9750-7c740efdff8b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3c3537a2-b895-407a-8b91-be4f070c787f",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url.https}}/tokens?id={{tokenId}}",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"tokens"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{tokenId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS menu",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{tokenId}}"
+					},
+					{
+						"key": "email",
+						"value": "{{email}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url.https}}/menu",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"menu"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS order  new correct",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "674249d9-2993-4318-9750-7c740efdff8b",
+						"exec": [
+							"if (pm.response.code === 200 ) {",
+							"    pm.environment.set(\"orderId\", JSON.parse(responseBody).orderId);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{tokenId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"{{email}}\",\n\t\"order\":[ 0,1,3,0,0,0,3,0,0,0,0,2,0,0,0,0,0 ]\n}"
+				},
+				"url": {
+					"raw": "{{url.https}}/orders",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS order  new incorrect",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "674249d9-2993-4318-9750-7c740efdff8b",
+						"exec": [
+							"if (pm.response.code === 200 ) {",
+							"    pm.environment.set(\"orderId\", JSON.parse(responseBody).orderId);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{tokenId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"{{email}}\",\n\t\"order\":[ 0,0,0,0,1,0,0,7,3,0,0,0,0,2,2,0,1 ]\n}"
+				},
+				"url": {
+					"raw": "{{url.https}}/orders",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS all orders by email",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{tokenId}}"
+					},
+					{
+						"key": "email",
+						"value": "{{email}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url.https}}/orders",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS order by id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{tokenId}}"
+					},
+					{
+						"key": "order",
+						"value": "{{orderId}}",
+						"type": "text"
+					},
+					{
+						"key": "email",
+						"value": "{{email}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url.https}}/orders",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS order edit by id",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{tokenId}}"
+					},
+					{
+						"key": "order",
+						"value": "{{orderId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"{{email}}\",\n\t\"order\":[ 0,2,2,0,0,0,2,0,0,0,0,1,1,0,0,0,0 ]\n}"
+				},
+				"url": {
+					"raw": "{{url.https}}/orders",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTPS order by id",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{tokenId}}"
+					},
+					{
+						"key": "email",
+						"value": "{{email}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url.https}}/orders?id={{orderId}}",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"orders"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{orderId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API payment",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{tokenId}}",
+						"type": "text"
+					},
+					{
+						"key": "email",
+						"value": "{{email}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url.https}}/orders.payments?id={{orderId}}&source={{StripePaymentToken}}&currency=usd&description=test pizzas payment",
+					"host": [
+						"{{url.https}}"
+					],
+					"path": [
+						"orders.payments"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{orderId}}"
+						},
+						{
+							"key": "source",
+							"value": "{{StripePaymentToken}}"
+						},
+						{
+							"key": "currency",
+							"value": "usd"
+						},
+						{
+							"key": "description",
+							"value": "test pizzas payment"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
