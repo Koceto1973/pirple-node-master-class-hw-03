@@ -21,6 +21,21 @@ handlers.users = function(data,callback){ // from data.method desides which of h
 // Container for all the users methods
 handlers._users  = {};
 
+// switch ( trimmedPath ) {
+//   case ''               : chosenHandler = handlers.index; break;
+//   case 'favicon.ico'    : chosenHandler = handlers.favicon; break;
+//   case 'static'         : chosenHandler = handlers.static; break;
+//   case 'account/create' : chosenHandler = handlers.accountCreate; break;
+//   case 'account/edit'   : chosenHandler = handlers.accountEdit; break;
+//   case 'account/deleted': chosenHandler = handlers.accountDeleted; break;
+//   case 'users'          : chosenHandler = handlers.users; break;
+//   case 'tokens'         : chosenHandler = handlers.tokens; break;
+//   case 'menu'           : chosenHandler = handlers.menu; break;
+//   case 'orders'         : chosenHandler = handlers.orders; break;
+//   case 'orders.payments': chosenHandler = handlers.payments; break;
+//   default               : chosenHandler = handlers.notFound;
+// }
+
 // Users - post
 // Required data: name, email, address, password
 // Optional data: none

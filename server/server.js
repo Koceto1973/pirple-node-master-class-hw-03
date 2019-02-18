@@ -23,12 +23,6 @@ server.httpsServerOptions = {
   'cert': fs.readFileSync(path.join(__dirname,'/../server/https.options/cert.pem'))
 };
 server.httpsServer = https.createServer(server.httpsServerOptions,function(req,res){
-  server.unifiedServer(req,res);
-});
-
-// All the server logic for both the http and https server
-server.unifiedServer = function(req,res){
-
   // Parse the url
   var parsedUrl = url.parse(req.url, true);
 
@@ -54,8 +48,22 @@ server.unifiedServer = function(req,res){
   req.on('end', function() {
       buffer += decoder.end();
 
-      // Check the router for a matching path for a handler. If one is not found, use the notFound handler instead.
-      var chosenHandler = typeof(server.router[trimmedPath]) !== 'undefined' ? server.router[trimmedPath] : handlers.notFound;
+      // Check for a matching path for a handler, use notFound handler as default
+      var chosenHandler = '';
+      switch ( trimmedPath ) {
+        case ''               : chosenHandler = handlers.index; break;
+        case 'favicon.ico'    : chosenHandler = handlers.favicon; break;
+        case 'static'         : chosenHandler = handlers.static; break;
+        case 'account/create' : chosenHandler = handlers.accountCreate; break;
+        case 'account/edit'   : chosenHandler = handlers.accountEdit; break;
+        case 'account/deleted': chosenHandler = handlers.accountDeleted; break;
+        case 'users'          : chosenHandler = handlers.users; break;
+        case 'tokens'         : chosenHandler = handlers.tokens; break;
+        case 'menu'           : chosenHandler = handlers.menu; break;
+        case 'orders'         : chosenHandler = handlers.orders; break;
+        case 'orders.payments': chosenHandler = handlers.payments; break;
+        default               : chosenHandler = handlers.notFound;
+      }
 
       // Construct the data object to send to the handler
       var data = {
@@ -121,20 +129,7 @@ server.unifiedServer = function(req,res){
       });
 
   });
-};
-
-// Define the request router
-server.router = {
-  ''                : handlers.index,
-  'account/create'  : handlers.accountCreate,
-  'account/edit'    : handlers.accountEdit,
-  'account/deleted' : handlers.accountDeleted,
-  "users"           : handlers.users,
-  "tokens"          : handlers.tokens,
-  "menu"            : handlers.menu,
-  "orders"          : handlers.orders,
-  "orders.payments" : handlers.payments,
-};
+});
 
 // Init script
 server.init = function(){
