@@ -24,17 +24,48 @@ handlers._users  = {};
 // switch ( trimmedPath ) {
 //   case ''               : chosenHandler = handlers.index; break;
 //   case 'favicon.ico'    : chosenHandler = handlers.favicon; break;
-//   case 'static'         : chosenHandler = handlers.static; break;
 //   case 'account/create' : chosenHandler = handlers.accountCreate; break;
 //   case 'account/edit'   : chosenHandler = handlers.accountEdit; break;
 //   case 'account/deleted': chosenHandler = handlers.accountDeleted; break;
-//   case 'users'          : chosenHandler = handlers.users; break;
-//   case 'tokens'         : chosenHandler = handlers.tokens; break;
-//   case 'menu'           : chosenHandler = handlers.menu; break;
-//   case 'orders'         : chosenHandler = handlers.orders; break;
-//   case 'orders.payments': chosenHandler = handlers.payments; break;
-//   default               : chosenHandler = handlers.notFound;
 // }
+
+// Static assets
+handlers.static = function(data,callback){ // callback(200,data,contentType);
+  // Reject any request that isn't a GET
+  if(data.method == 'get'){
+    // Get the filename being requested
+    var trimmedAssetName = data.trimmedPath.replace('public/','').trim();
+    if(trimmedAssetName.length > 0){
+      // Read in the asset's data
+      helpers.getStaticAsset(trimmedAssetName,function(err,data){
+        if(!err && data){
+
+          // Determine the content type (default to plain text)
+          var contentType = 'plain';
+
+          if(trimmedAssetName.indexOf('.css') > -1){ contentType = 'css'; }
+          if(trimmedAssetName.indexOf('.png') > -1){ contentType = 'png'; }
+          if(trimmedAssetName.indexOf('.jpg') > -1){ contentType = 'jpg'; }
+          if(trimmedAssetName.indexOf('.ico') > -1){ contentType = 'favicon'; }
+
+          // Callback the data
+          callback(200,data,contentType);
+        } else { // cant getStaticAsset()
+          callback(404);
+        }
+      });
+    } else { // missing asset file name
+      callback(404);
+    }
+  } else { // not a get request
+    callback(405);
+  }
+};
+
+// Not-Found
+handlers.notFound = function(data,callback){
+  callback(404);
+};
 
 // Users - post
 // Required data: name, email, address, password

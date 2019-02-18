@@ -195,5 +195,22 @@ helpers.createMailgunNotification = function(email, notification, callback){
   req.end();
 };
 
+// Get the contents of a static (public) asset
+helpers.getStaticAsset = function(fileName,callback){ // callback(false,data);
+  fileName = typeof(fileName) == 'string' && fileName.length > 0 ? fileName : false;
+  if(fileName){
+    var publicDir = path.join(__dirname,'/../client/staticAssets');
+    fs.readFile(publicDir+fileName, function(err,data){
+      if(!err && data){
+        callback(false,data);
+      } else {
+        callback('No file could be found');
+      }
+    });
+  } else {
+    callback('A valid file name was not specified');
+  }
+};
+
 // Export the module
 module.exports = helpers;
