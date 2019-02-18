@@ -1,10 +1,12 @@
 // Helpers for various tasks
 
 // Dependencies
-var config = require('./config');
-var https = require('https');
-var crypto = require('crypto');
+const config = require('./config');
+const https = require('https');
+const crypto = require('crypto');
 const querystring = require('querystring');
+const path = require('path');
+const fs = require('fs');
 
 // Container for all the helpers
 var helpers = {};
@@ -196,10 +198,10 @@ helpers.createMailgunNotification = function(email, notification, callback){
 };
 
 // Get the string content of a template, and use provided data for string interpolation
-helpers.getTemplate = function(templateName,data,callback){
-  templateName = typeof(templateName) == 'string' && templateName.length > 0 ? templateName : false;
+helpers.getTemplate = function(data,callback){
+  templateName = typeof(data.templateName) == 'string' && data.templateName.length > 0 ? data.templateName : false;
   data = typeof(data) == 'object' && data !== null ? data : {};
-  if(templateName){
+  if(templateName){ 
     var templatesDir = path.join(__dirname,'/templates/');
     fs.readFile(templatesDir+templateName+'.html', 'utf8', function(err,str){
       if(!err && str && str.length > 0){
@@ -207,11 +209,11 @@ helpers.getTemplate = function(templateName,data,callback){
         var finalString = helpers.interpolate(str,data);
         callback(false,finalString);
       } else {
-        callback('No template could be found');
+        callback(true,'No template could be found');
       }
     });
   } else {
-    callback('A valid template name was not specified');
+    callback(true,'A valid template name was not specified');
   }
 };
 
@@ -220,10 +222,12 @@ helpers.addUniversalTemplates = function(str,data,callback){
   str = typeof(str) == 'string' && str.length > 0 ? str : '';
   data = typeof(data) == 'object' && data !== null ? data : {};
   // Get the header
-  helpers.getTemplate('_header',data,function(err,headerString){
+  data.templateName = '_header';
+  helpers.getTemplate(data,function(err,headerString){
     if(!err && headerString){
       // Get the footer
-      helpers.getTemplate('_footer',data,function(err,footerString){
+      data.templateName = '_footer';
+      helpers.getTemplate(data,function(err,footerString){
         if(!err && headerString){
           // Add them all together
           var fullString = headerString+str+footerString;

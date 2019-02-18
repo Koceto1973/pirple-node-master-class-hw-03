@@ -17,11 +17,11 @@ handlers.notFound = function(data,callback){
 // html templates rendered with header and footer, required templateData injected
 handlers.template = function(data,callback){ // callback(200,str,'html')
   // Reject any request that isn't a GET
-  if(data.method == 'get'){console.log(templates[data.trimmedPath]);
+  if(data.method == 'get'){
     // Prepare data for interpolation
     var templateData = templates[data.trimmedPath]; 
     // Read in a template as a string
-    helpers.getTemplate(data.trimmedPath,templateData,function(err,str){
+    helpers.getTemplate(templateData,function(err,str){
       if(!err && str){
         // Add the universal header and footer
         helpers.addUniversalTemplates(str,templateData,function(err,str){
