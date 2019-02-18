@@ -67,19 +67,48 @@ server.unifiedServer = function(req,res){
       };
 
       // Route the request to the handler specified in the router
-      chosenHandler(data,function(statusCode,payload){ // function is callback, gets args from specific handler by callback(code, payload)
+      chosenHandler(data,function(statusCode,payload, contentType){ // function is callback, gets args from specific handler by callback(code, payload)
 
         // Use the status code returned from the handler, or set the default status code to 200
         statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
 
-        // Use the payload returned from the handler, or set the default payload to an empty object
-        payload = typeof(payload) == 'object'? payload : {};
+        // Return the response parts that are content-type specific
+        var payloadString = '';
 
-        // Convert the payload to a string
-        var payloadString = JSON.stringify(payload);
+        // Use the contentType returned from the handler, or set the default to json when writing headers
+        switch (contentType) {
+          case 'html':
+            res.setHeader('Content-Type', 'text/html');
+            payloadString = typeof(payload) == 'string'? payload : '';
+            break;
+          case 'jpg':
+            res.setHeader('Content-Type', 'image/jpeg');
+            payloadString = typeof(payload) !== 'undefined' ? payload : '';
+            break;
+          case 'png':
+            res.setHeader('Content-Type', 'image/png');
+            payloadString = typeof(payload) !== 'undefined' ? payload : '';
+            break;
+          case 'css':
+            res.setHeader('Content-Type', 'text/css');
+            payloadString = typeof(payload) !== 'undefined' ? payload : '';
+            break;
+          case 'plain':
+            res.setHeader('Content-Type', 'text/plain');
+            payloadString = typeof(payload) !== 'undefined' ? payload : '';
+            break;
+          case 'favicon':
+            res.setHeader('Content-Type', 'image/x-icon');
+            payloadString = typeof(payload) !== 'undefined' ? payload : '';
+            break;
+          default:
+            contentType = 'json';
+            res.setHeader('Content-Type', 'application/json');
+            payload = typeof(payload) == 'object'? payload : {};
+            payloadString = JSON.stringify(payload);
+        }
 
         // Return the response
-        res.setHeader('Content-Type', 'application/json');
         res.writeHead(statusCode);
         res.end(payloadString);
         
@@ -96,11 +125,15 @@ server.unifiedServer = function(req,res){
 
 // Define the request router
 server.router = {
-  "users": handlers.users,
-  "tokens": handlers.tokens,
-  "menu": handlers.menu,
-  "orders": handlers.orders,
-  "orders.payments": handlers.payments,
+  ''                : handlers.index,
+  'account/create'  : handlers.accountCreate,
+  'account/edit'    : handlers.accountEdit,
+  'account/deleted' : handlers.accountDeleted,
+  "users"           : handlers.users,
+  "tokens"          : handlers.tokens,
+  "menu"            : handlers.menu,
+  "orders"          : handlers.orders,
+  "orders.payments" : handlers.payments,
 };
 
 // Init script
