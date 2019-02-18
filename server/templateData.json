@@ -1,0 +1,15 @@
+{
+  "":{
+    "templateName":"index",
+    "head.title": "Online Pizza Store",
+    "head.description": "We offer you the oportunity to make pizzas order online from our menu and pay online for it."
+  },
+  "accountCreate":{
+    "head.title": "Create an Account",
+    "head.description": "Signup is easy and only takes a few seconds."
+  },
+  "sessionCreate":{
+    "head.title": "Login to your account",
+    "head.description": "Please enter your email address and password to access your account."
+  }
+}

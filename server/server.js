@@ -51,12 +51,12 @@ server.httpsServer = https.createServer(server.httpsServerOptions,function(req,r
       // Check for a matching path for a handler, use notFound handler as default
       var chosenHandler = '';
       switch ( trimmedPath ) {
-        case ''               : chosenHandler = handlers.index; break;
+        case ''               : chosenHandler = handlers.template; break;
         case 'favicon.ico'    : chosenHandler = handlers.favicon; break;
         case 'static'         : chosenHandler = handlers.static; break;
-        case 'account/create' : chosenHandler = handlers.accountCreate; break;
-        case 'account/edit'   : chosenHandler = handlers.accountEdit; break;
-        case 'account/deleted': chosenHandler = handlers.accountDeleted; break;
+        case 'account/create' : chosenHandler = handlers.template; break;
+        case 'account/edit'   : chosenHandler = handlers.template; break;
+        case 'account/deleted': chosenHandler = handlers.template; break;
         case 'users'          : chosenHandler = handlers.users; break;
         case 'tokens'         : chosenHandler = handlers.tokens; break;
         case 'menu'           : chosenHandler = handlers.menu; break;

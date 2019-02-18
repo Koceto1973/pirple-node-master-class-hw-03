@@ -3,31 +3,61 @@
 // Dependencies
 var _data = require('./data');
 var helpers = require('./helpers');
-var config = require('./config');
+var templates = require('./templateData.json');
+
 
 // Define all the handlers
 var handlers = {};
 
-// Users
-handlers.users = function(data,callback){ // from data.method desides which of handlers._users(data, callback) to run
-  var acceptableMethods = ['post','get','put','delete'];
-  if(acceptableMethods.indexOf(data.method) > -1){
-    handlers._users[data.method](data,callback);
+// Not-Found
+handlers.notFound = function(data,callback){
+  callback(404);
+};
+
+// html templates rendered with header and footer, required templateData injected
+handlers.template = function(data,callback){ // callback(200,str,'html')
+  // Reject any request that isn't a GET
+  if(data.method == 'get'){console.log(templates[data.trimmedPath]);
+    // Prepare data for interpolation
+    var templateData = templates[data.trimmedPath]; 
+    // Read in a template as a string
+    helpers.getTemplate(data.trimmedPath,templateData,function(err,str){
+      if(!err && str){
+        // Add the universal header and footer
+        helpers.addUniversalTemplates(str,templateData,function(err,str){
+          if(!err && str){
+            // Return that page as HTML
+            callback(200,str,'html');
+          } else { // can not get header and footer templates
+            callback(500,undefined,'html');
+          }
+        });
+      } else { // can not get the template file
+        callback(500,undefined,'html');
+      }
+    });
+  } else { // method other than get
+    callback(405,undefined,'html');
+  }
+};
+
+// Favicon
+handlers.favicon = function(data,callback){ // callback(200,data,'favicon')
+  // Reject any request that isn't a GET
+  if(data.method == 'get'){
+    // Read in the favicon's data
+    helpers.getStaticAsset('favicon.ico',function(err,data){
+      if(!err && data){
+        // Callback the data
+        callback(200,data,'favicon');
+      } else {
+        callback(500);
+      }
+    });
   } else {
     callback(405);
   }
 };
-
-// Container for all the users methods
-handlers._users  = {};
-
-// switch ( trimmedPath ) {
-//   case ''               : chosenHandler = handlers.index; break;
-//   case 'favicon.ico'    : chosenHandler = handlers.favicon; break;
-//   case 'account/create' : chosenHandler = handlers.accountCreate; break;
-//   case 'account/edit'   : chosenHandler = handlers.accountEdit; break;
-//   case 'account/deleted': chosenHandler = handlers.accountDeleted; break;
-// }
 
 // Static assets
 handlers.static = function(data,callback){ // callback(200,data,contentType);
@@ -62,10 +92,19 @@ handlers.static = function(data,callback){ // callback(200,data,contentType);
   }
 };
 
-// Not-Found
-handlers.notFound = function(data,callback){
-  callback(404);
+
+// Users
+handlers.users = function(data,callback){ // from data.method desides which of handlers._users(data, callback) to run
+  var acceptableMethods = ['post','get','put','delete'];
+  if(acceptableMethods.indexOf(data.method) > -1){
+    handlers._users[data.method](data,callback);
+  } else {
+    callback(405);
+  }
 };
+
+// Container for all the users methods
+handlers._users  = {};
 
 // Users - post
 // Required data: name, email, address, password

@@ -8,10 +8,9 @@ var environments = {};
 
 // Staging (default) environment
 environments.staging = {
-  'httpsPort' : 3002,
+  'httpsPort' : 5000,
   'envName' : 'staging',
   'hashingSecret' : cnfg.hashingSecret,
-  'maxChecks' : 5,
   'authTokenStripe':cnfg.testAuthTokenStripe,
   'apiKeyMailgun':cnfg.apiKeyMailgun,
   'domainNameMailgun':cnfg.domainNameMailgun,
@@ -22,7 +21,6 @@ environments.production = {
   'httpsPort' : process.env.PORT,
   'envName' : 'production',
   'hashingSecret' : process.env.hashingSecret,
-  'maxChecks' : 10,
   'authTokenStripe':cnfg.AuthTokenStripe,
   'apiKeyMailgun':cnfg.apiKeyMailgun,
   'domainNameMailgun':cnfg.domainNameMailgun,
