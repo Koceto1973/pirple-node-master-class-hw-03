@@ -76,7 +76,7 @@ handlers.static = function(data,callback){ // callback(200,data,contentType);
           if(trimmedAssetName.indexOf('.css') > -1){ contentType = 'css'; }
           if(trimmedAssetName.indexOf('.png') > -1){ contentType = 'png'; }
           if(trimmedAssetName.indexOf('.jpg') > -1){ contentType = 'jpg'; }
-          if(trimmedAssetName.indexOf('.jpg') > -1){ contentType = 'svg'; }
+          if(trimmedAssetName.indexOf('.svg') > -1){ contentType = 'svg'; }
           if(trimmedAssetName.indexOf('.ico') > -1){ contentType = 'favicon'; }
 
           // Callback the data

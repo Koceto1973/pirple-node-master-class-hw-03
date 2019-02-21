@@ -1,8 +1,8 @@
 {
   "":{
     "templateName":"index",
-    "head.title": "Online Pizza Store",
-    "head.description": "We offer you the oportunity to make pizzas order online from our menu and pay online for it."
+    "head.title": "Get your swifty tasty PIZZAS now !",
+    "head.description": "We offer you the oportunity to choose your pizzas from our menu and pay for it."
   },
   "account/create":{
     "templateName":"accountCreate",

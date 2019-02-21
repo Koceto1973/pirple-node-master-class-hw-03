@@ -197,16 +197,16 @@ helpers.createMailgunNotification = function(email, notification, callback){
   req.end();
 };
 
-// Get the string content of a template, and use provided data for string interpolation
-helpers.getTemplate = function(data,callback){
-  templateName = typeof(data.templateName) == 'string' && data.templateName.length > 0 ? data.templateName : false;
-  data = typeof(data) == 'object' && data !== null ? data : {};
+// Get the string content of a template, and use provided templateData for string interpolation
+helpers.getTemplate = function(templateData,callback){
+  templateName = typeof(templateData.templateName) == 'string' && templateData.templateName.length > 0 ? templateData.templateName : false;
+  templateData = typeof(templateData) == 'object' && templateData !== null ? templateData : {};
   if(templateName){
     var templatesDir = path.join(__dirname,'/templates/');
     fs.readFile(templatesDir+templateName+'.html', 'utf8', function(err,str){
       if(!err && str && str.length > 0){
         // Do interpolation on the string
-        var finalString = helpers.interpolate(str,data);
+        var finalString = helpers.interpolate(str,templateData);
         callback(false,finalString);
       } else {
         callback(true,'No template could be found');
@@ -218,22 +218,21 @@ helpers.getTemplate = function(data,callback){
 };
 
 // Add the universal header and footer to a string, and pass provided data object to header and footer for interpolation
-helpers.addUniversalTemplates = function(str,data,callback){
+helpers.addUniversalTemplates = function(str,templateData,callback){
   str = typeof(str) == 'string' && str.length > 0 ? str : '';
-  data = typeof(data) == 'object' && data !== null ? data : {};
-  var htmlBody = data.templateName;
+  templateData = typeof(templateData) == 'object' && templateData !== null ? templateData : {};
+  var htmlBody = templateData.templateName;
   // Get the header
-  data.templateName = '_header';
-  helpers.getTemplate(data,function(err,headerString){
+  templateData.templateName = '_header';
+  helpers.getTemplate(templateData,function(err,headerString){
     if(!err && headerString){
       // Get the footer
-      data.templateName = '_footer';
-      helpers.getTemplate(data,function(err,footerString){
+      templateData.templateName = '_footer';
+      helpers.getTemplate(templateData,function(err,footerString){
         if(!err && headerString){
           // Add them all together
           var fullString = headerString+str+footerString;
-          data.templateName = '_footer';
-          data.templateName = htmlBody;
+          templateData.templateName = htmlBody;
           callback(false,fullString);
         } else {
           callback('Could not find the footer template');
@@ -246,22 +245,20 @@ helpers.addUniversalTemplates = function(str,data,callback){
 };
 
 // Take a given string and data object, and find/replace all the keys within it
-helpers.interpolate = function(str,data){
+helpers.interpolate = function(str,templateData){
   str = typeof(str) == 'string' && str.length > 0 ? str : '';
-  data = typeof(data) == 'object' && data !== null ? data : {};
+  templateData = typeof(templateData) == 'object' && templateData !== null ? templateData : {};
 
   // Add the templateGlobals to the data object, prepending their key name with "global."
   for(var keyName in config.templateGlobals){
      if(config.templateGlobals.hasOwnProperty(keyName)){
-       data['global.'+keyName] = config.templateGlobals[keyName]
+      templateData['global.'+keyName] = config.templateGlobals[keyName] // done 3 times
      }
   }
   // For each key in the data object, insert its value into the string at the corresponding placeholder
-  for(var key in data){
-     if(data.hasOwnProperty(key) && typeof(data[key] == 'string')){
-      var replace = data[key];
-      var find = '{'+key+'}';
-      str = str.replace(find,replace);
+  for(var key in templateData){
+     if(templateData.hasOwnProperty(key) && typeof(templateData[key] == 'string')){
+      str = str.replace('{'+key+'}',templateData[key]);
      }
   }
   return str;

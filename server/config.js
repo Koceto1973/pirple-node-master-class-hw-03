@@ -14,6 +14,11 @@ environments.staging = {
   'authTokenStripe':cnfg.testAuthTokenStripe,
   'apiKeyMailgun':cnfg.apiKeyMailgun,
   'domainNameMailgun':cnfg.domainNameMailgun,
+  'templateGlobals' : {
+    'appName' : 'Swifty Tasty Pizza',
+    'companyName' : 'Easy, Inc.',
+    'yearCreated' : '2019'
+  },
 };
 
 // Production environment
@@ -24,6 +29,11 @@ environments.production = {
   'authTokenStripe':cnfg.AuthTokenStripe,
   'apiKeyMailgun':cnfg.apiKeyMailgun,
   'domainNameMailgun':cnfg.domainNameMailgun,
+  'templateGlobals' : {
+    'appName' : 'Swifty Tasty Pizza',
+    'companyName' : 'Easy, Inc.',
+    'yearCreated' : '2019'
+  },
 };
 
 // Determine which environment was passed as a command-line argument
