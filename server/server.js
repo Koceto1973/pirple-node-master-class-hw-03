@@ -52,8 +52,6 @@ server.httpsServer = https.createServer(server.httpsServerOptions,function(req,r
       var chosenHandler = '';
       switch ( trimmedPath ) {
         case ''               : chosenHandler = handlers.template; break;
-        case 'favicon.ico'    : chosenHandler = handlers.favicon; break;
-        case 'static'         : chosenHandler = handlers.static; break;
         case 'account/create' : chosenHandler = handlers.template; break;
         case 'account/edit'   : chosenHandler = handlers.template; break;
         case 'account/deleted': chosenHandler = handlers.template; break;
@@ -62,7 +60,12 @@ server.httpsServer = https.createServer(server.httpsServerOptions,function(req,r
         case 'menu'           : chosenHandler = handlers.menu; break;
         case 'orders'         : chosenHandler = handlers.orders; break;
         case 'orders.payments': chosenHandler = handlers.payments; break;
-        default               : chosenHandler = handlers.notFound;
+        default               : 
+          if (trimmedPath.indexOf('staticAssets') > -1 ){
+            chosenHandler = handlers.static; break;
+          } else {
+            chosenHandler = handlers.notFound; break;
+          }
       }
 
       // Construct the data object to send to the handler
@@ -95,6 +98,10 @@ server.httpsServer = https.createServer(server.httpsServerOptions,function(req,r
             break;
           case 'png':
             res.setHeader('Content-Type', 'image/png');
+            payloadString = typeof(payload) !== 'undefined' ? payload : '';
+            break;
+          case 'svg':
+            res.setHeader('Content-Type', 'image/svg');
             payloadString = typeof(payload) !== 'undefined' ? payload : '';
             break;
           case 'css':

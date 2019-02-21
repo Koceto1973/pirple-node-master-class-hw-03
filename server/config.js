@@ -8,7 +8,7 @@ var environments = {};
 
 // Staging (default) environment
 environments.staging = {
-  'httpsPort' : 3000,
+  'httpsPort' : 3002,
   'envName' : 'staging',
   'hashingSecret' : cnfg.hashingSecret,
   'authTokenStripe':cnfg.testAuthTokenStripe,

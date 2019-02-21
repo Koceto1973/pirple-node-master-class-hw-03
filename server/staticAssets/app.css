@@ -1,0 +1,49 @@
+body {
+  width: 100vw;
+  height: 100vh;
+
+  background-color: aquamarine;
+
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.header {
+  width: 100vw;
+  height: 11vh;
+
+  display:flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.logo {
+  width: 10vw;
+}
+
+.menu {
+  width: 90vw;
+    
+  display:flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+  }
+
+.menu li {
+  line-height: 11vh;
+  text-align: center;
+}
+
+.content {
+  width: 100vw;
+  height: 84vh;
+
+  background-color: orange;
+}
+
+.footer {
+  width: 100vw;
+  height: 5vh;
+}

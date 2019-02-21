@@ -19,7 +19,7 @@ handlers.template = function(data,callback){ // callback(200,str,'html')
   // Reject any request that isn't a GET
   if(data.method == 'get'){
     // Prepare data for interpolation
-    var templateData = templates[data.trimmedPath]; 
+    var templateData = templates[data.trimmedPath];
     // Read in a template as a string
     helpers.getTemplate(templateData,function(err,str){
       if(!err && str){
@@ -64,7 +64,7 @@ handlers.static = function(data,callback){ // callback(200,data,contentType);
   // Reject any request that isn't a GET
   if(data.method == 'get'){
     // Get the filename being requested
-    var trimmedAssetName = data.trimmedPath.replace('public/','').trim();
+    var trimmedAssetName = data.trimmedPath.replace('staticAssets/','').trim();
     if(trimmedAssetName.length > 0){
       // Read in the asset's data
       helpers.getStaticAsset(trimmedAssetName,function(err,data){
@@ -76,6 +76,7 @@ handlers.static = function(data,callback){ // callback(200,data,contentType);
           if(trimmedAssetName.indexOf('.css') > -1){ contentType = 'css'; }
           if(trimmedAssetName.indexOf('.png') > -1){ contentType = 'png'; }
           if(trimmedAssetName.indexOf('.jpg') > -1){ contentType = 'jpg'; }
+          if(trimmedAssetName.indexOf('.jpg') > -1){ contentType = 'svg'; }
           if(trimmedAssetName.indexOf('.ico') > -1){ contentType = 'favicon'; }
 
           // Callback the data

@@ -201,7 +201,7 @@ helpers.createMailgunNotification = function(email, notification, callback){
 helpers.getTemplate = function(data,callback){
   templateName = typeof(data.templateName) == 'string' && data.templateName.length > 0 ? data.templateName : false;
   data = typeof(data) == 'object' && data !== null ? data : {};
-  if(templateName){ 
+  if(templateName){
     var templatesDir = path.join(__dirname,'/templates/');
     fs.readFile(templatesDir+templateName+'.html', 'utf8', function(err,str){
       if(!err && str && str.length > 0){
@@ -221,6 +221,7 @@ helpers.getTemplate = function(data,callback){
 helpers.addUniversalTemplates = function(str,data,callback){
   str = typeof(str) == 'string' && str.length > 0 ? str : '';
   data = typeof(data) == 'object' && data !== null ? data : {};
+  var htmlBody = data.templateName;
   // Get the header
   data.templateName = '_header';
   helpers.getTemplate(data,function(err,headerString){
@@ -231,6 +232,8 @@ helpers.addUniversalTemplates = function(str,data,callback){
         if(!err && headerString){
           // Add them all together
           var fullString = headerString+str+footerString;
+          data.templateName = '_footer';
+          data.templateName = htmlBody;
           callback(false,fullString);
         } else {
           callback('Could not find the footer template');
@@ -268,7 +271,7 @@ helpers.interpolate = function(str,data){
 helpers.getStaticAsset = function(fileName,callback){ // callback(false,data);
   fileName = typeof(fileName) == 'string' && fileName.length > 0 ? fileName : false;
   if(fileName){
-    var publicDir = path.join(__dirname,'/../client/staticAssets');
+    var publicDir = path.join(__dirname,'/staticAssets/');
     fs.readFile(publicDir+fileName, function(err,data){
       if(!err && data){
         callback(false,data);
