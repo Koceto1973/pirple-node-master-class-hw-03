@@ -52,14 +52,18 @@ server.httpsServer = https.createServer(server.httpsServerOptions,function(req,r
       var chosenHandler = '';
       switch ( trimmedPath ) { 
         case ''               : chosenHandler = handlers.template; break;
+        
         case 'account/create' : chosenHandler = handlers.template; break;
         case 'account/edit'   : chosenHandler = handlers.template; break;
         case 'account/deleted': chosenHandler = handlers.template; break;
-        case 'users'          : chosenHandler = handlers.users; break;
-        case 'tokens'         : chosenHandler = handlers.tokens; break;
-        case 'menu'           : chosenHandler = handlers.menu; break;
-        case 'orders'         : chosenHandler = handlers.orders; break;
-        case 'orders.payments': chosenHandler = handlers.payments; break;
+        
+        case 'session/create' : chosenHandler = handlers.template; break;
+
+        case 'api/users'          : chosenHandler = handlers.users; break;
+        case 'api/tokens'         : chosenHandler = handlers.tokens; break;
+        case 'api/menu'           : chosenHandler = handlers.menu; break;
+        case 'api/orders'         : chosenHandler = handlers.orders; break;
+        case 'api/orders.payments': chosenHandler = handlers.payments; break;
         default               : 
           if (trimmedPath.indexOf('staticAssets') > -1 ){
             chosenHandler = handlers.static; break;

@@ -11,7 +11,7 @@
   },
   "session/create":{
     "templateName":"sessionCreate",
-    "head.title": "Login to your account",
+    "head.title": "Login to your account now !",
     "head.description": "Please enter your email address and password to access your account."
   }
 }
