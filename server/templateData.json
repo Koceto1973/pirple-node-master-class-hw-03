@@ -16,12 +16,17 @@
   },
   "account/deleted":{
     "templateName":"accountDeleted",
-    "head.title": "So sad to let you go !",
-    "head.description": "Welcome back anytime."
+    "head.title": "Your account has been deleted !",
+    "head.description": "So sad to let you go, welcome back anytime."
   },
   "session/create":{
     "templateName":"sessionCreate",
-    "head.title": "Login to your account now !",
+    "head.title": "See you next time !",
     "head.description": "Please enter your email address and password to access your account."
+  },
+  "session/deleted":{
+    "templateName":"accountDeleted",
+    "head.title": "You have logged out successfully !",
+    "head.description": "Welcome back anytime, hungry you and your hungry friends !"
   }
 }

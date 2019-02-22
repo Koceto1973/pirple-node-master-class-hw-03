@@ -57,7 +57,8 @@ server.httpsServer = https.createServer(server.httpsServerOptions,function(req,r
         case 'account/edit'   : chosenHandler = handlers.template; break;
         case 'account/deleted': chosenHandler = handlers.template; break;
         
-        case 'session/create' : chosenHandler = handlers.template; break;
+        case 'session/create'  : chosenHandler = handlers.template; break;
+        case 'session/deleted' : chosenHandler = handlers.template; break;
 
         case 'api/users'          : chosenHandler = handlers.users; break;
         case 'api/tokens'         : chosenHandler = handlers.tokens; break;
