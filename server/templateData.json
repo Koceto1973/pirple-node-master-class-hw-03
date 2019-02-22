@@ -6,7 +6,7 @@
   },
   "account/create":{
     "templateName":"accountCreate",
-    "head.title": "Create an Account",
+    "head.title": "Create an Account now !",
     "head.description": "Signup is easy and only takes a few seconds."
   },
   "session/create":{

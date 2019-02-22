@@ -44,7 +44,7 @@ handlers.template = function(data,callback){ // callback(200,str,'html')
 // Static assets
 handlers.static = function(data,callback){ // callback(200,data,contentType);
   // Reject any request that isn't a GET
-  if(data.method == 'get'){
+  if(data.method == 'get'){ 
     // Get the filename being requested
     var trimmedAssetName = data.trimmedPath.replace('staticAssets/','').trim();
     if(trimmedAssetName.length > 0){

@@ -221,18 +221,14 @@ helpers.getTemplate = function(templateData,callback){
 helpers.addUniversalTemplates = function(str,templateData,callback){
   str = typeof(str) == 'string' && str.length > 0 ? str : '';
   templateData = typeof(templateData) == 'object' && templateData !== null ? templateData : {};
-  var htmlBody = templateData.templateName;
   // Get the header
-  templateData.templateName = '_header';
-  helpers.getTemplate(templateData,function(err,headerString){
+  helpers.getTemplate({templateName:'_header'},function(err,headerString){
     if(!err && headerString){
       // Get the footer
-      templateData.templateName = '_footer';
-      helpers.getTemplate(templateData,function(err,footerString){
+      helpers.getTemplate({templateName:'_footer'},function(err,footerString){
         if(!err && headerString){
           // Add them all together
           var fullString = headerString+str+footerString;
-          templateData.templateName = htmlBody;
           callback(false,fullString);
         } else {
           callback('Could not find the footer template');
@@ -268,7 +264,7 @@ helpers.interpolate = function(str,templateData){
 helpers.getStaticAsset = function(fileName,callback){ // callback(false,data);
   fileName = typeof(fileName) == 'string' && fileName.length > 0 ? fileName : false;
   if(fileName){
-    var publicDir = path.join(__dirname,'/staticAssets/');
+    var publicDir = path.join(__dirname,'/staticAssets/'); 
     fs.readFile(publicDir+fileName, function(err,data){
       if(!err && data){
         callback(false,data);

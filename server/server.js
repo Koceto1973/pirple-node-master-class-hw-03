@@ -29,7 +29,7 @@ server.httpsServer = https.createServer(server.httpsServerOptions,function(req,r
   // Get the path
   var path = parsedUrl.pathname;
   var trimmedPath = path.replace(/^\/+|\/+$/g, '');
-
+  
   // Get the query string as an object
   var queryStringObject = parsedUrl.query;
 
@@ -50,7 +50,7 @@ server.httpsServer = https.createServer(server.httpsServerOptions,function(req,r
 
       // Check for a matching path for a handler, use notFound handler as default
       var chosenHandler = '';
-      switch ( trimmedPath ) {
+      switch ( trimmedPath ) { 
         case ''               : chosenHandler = handlers.template; break;
         case 'account/create' : chosenHandler = handlers.template; break;
         case 'account/edit'   : chosenHandler = handlers.template; break;
@@ -76,10 +76,10 @@ server.httpsServer = https.createServer(server.httpsServerOptions,function(req,r
         'headers' : headers,
         'payload' : helpers.parseJsonToObject(buffer)
       };
-
+      
       // Route the request to the handler specified in the router
       chosenHandler(data,function(statusCode,payload, contentType){ // function is callback, gets args from specific handler by callback(code, payload)
-
+        
         // Use the status code returned from the handler, or set the default status code to 200
         statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
 
