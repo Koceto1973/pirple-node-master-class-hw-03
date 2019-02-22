@@ -9,6 +9,16 @@
     "head.title": "Create an Account now !",
     "head.description": "Signup is easy and only takes a few seconds."
   },
+  "account/edit":{
+    "templateName":"accountEdit",
+    "head.title": "Edit your Account here !",
+    "head.description": "Carefully amend your details."
+  },
+  "account/deleted":{
+    "templateName":"accountDeleted",
+    "head.title": "So sad to let you go !",
+    "head.description": "Welcome back anytime."
+  },
   "session/create":{
     "templateName":"sessionCreate",
     "head.title": "Login to your account now !",
