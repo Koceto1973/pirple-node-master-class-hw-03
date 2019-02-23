@@ -14,6 +14,11 @@
     "head.title": "Edit your Account here !",
     "head.description": "Carefully amend your details."
   },
+  "account/delete":{
+    "templateName":"accountDelete",
+    "head.title": "Delete your Account ?",
+    "head.description": "If this is not your intention navigate back."
+  },
   "account/deleted":{
     "templateName":"accountDeleted",
     "head.title": "Your account has been deleted !",

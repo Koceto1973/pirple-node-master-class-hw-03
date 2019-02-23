@@ -1,3 +1,4 @@
+<script type="text/javascript" charset="utf-8" src="/staticAssets/appAccountDelete.js"></script>
 <link rel="stylesheet" type="text/css" href="/staticAssets/resets.css" />
 <link rel="stylesheet" type="text/css" href="/staticAssets/app.css" />
 <link href='https://fonts.googleapis.com/css?family=Lemon' rel='stylesheet'>
@@ -14,14 +15,8 @@
     </a>
     <!-- Navigation -->
     <ul class="menu">
-      <li>
-        <a href="/">Home</a>
-      </li>
-      <li class="loggedOut">
-        <a href="/account/create">Signup</a>
-      </li>
-      <li class="loggedOut">
-        <a href="/session/create">Login</a>
+      <li class="loggedIn">
+        <a href="/session/deleted">Log Out</a>
       </li>
     </ul>
 
@@ -31,11 +26,26 @@
   <!-- Page-Specific Content -->
   <div class="content">
 
-
 <h1>{head.title}</h1>
   <h2>Swifty and tasty, you remember !</h2>
 
   <div>{head.description}</div>
+
+  <div class="formWrapper">
+    <form id="accountDelete" action="/api/users" method="DELETE">
+      <input type="hidden" name="_method" value="DELETE"/>
+      <div class="formError"></div>
+      <div class="inputWrapper">
+        <div class="inputLabel">Your Email</div>
+        <div class="spacerSmall"></div>
+        <input type="text" name="email" placeholder="john@gmail.com" />
+        <div class="spacerBig"></div>
+      </div>
+      <div class="inputWrapper">
+        <button type="submit" >Delete Account</button>
+      </div>
+    </form>
+  </div>
 
 </div>
 
