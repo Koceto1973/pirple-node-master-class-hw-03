@@ -65,6 +65,10 @@ body {
   text-align: center;
 }
 
+form .formError {
+  color: red;
+}
+
 form .spacerSmall {
   height: 4px;
 }

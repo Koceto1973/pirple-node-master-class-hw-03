@@ -75,7 +75,6 @@ handlers.static = function(data,callback){ // callback(200,data,contentType);
   }
 };
 
-
 // Users
 handlers.users = function(data,callback){ // from data.method desides which of handlers._users(data, callback) to run
   var acceptableMethods = ['post','get','put','delete'];
@@ -129,7 +128,7 @@ handlers._users.post = function(data,callback){ // callback(200)
 
       } else {
         // User alread exists
-        callback(400,{'Error' : 'A user with that email number already exists'});
+        callback(400,{'Error' : 'A user with that email already exists'});
       }
     });
 

@@ -21,12 +21,17 @@
   },
   "session/create":{
     "templateName":"sessionCreate",
-    "head.title": "See you next time !",
+    "head.title": "Log into your Account now!",
     "head.description": "Please enter your email address and password to access your account."
   },
   "session/deleted":{
-    "templateName":"accountDeleted",
+    "templateName":"sessionDeleted",
     "head.title": "You have logged out successfully !",
     "head.description": "Welcome back anytime, hungry you and your hungry friends !"
+  },
+  "orders":{
+    "templateName":"orders",
+    "head.title": "Your orders here !",
+    "head.description": "You can add, edit of delete them !"
   }
 }
