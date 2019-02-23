@@ -1,10 +1,43 @@
+<script type="text/javascript" charset="utf-8" src="/staticAssets/appAccountEdit.js"></script>
+<link rel="stylesheet" type="text/css" href="/staticAssets/resets.css" />
+<link rel="stylesheet" type="text/css" href="/staticAssets/app.css" />
+<link href='https://fonts.googleapis.com/css?family=Lemon' rel='stylesheet'>
+
+</head>
+<body class="{body.class}">
+<!-- Page Wrapper -->
+<div class="wrapper">
+  <!-- Header -->
+  <div class="header">
+    <!-- Logo -->
+    <a class="logo" href="/">
+      <img src="/staticAssets/logo.png" alt="Logo" />
+    </a>
+    <!-- Navigation -->
+    <ul class="menu">
+      <li class="loggedIn">
+        <a href="/account/edit">Account Settings</a>
+      </li>
+      <li class="loggedIn">
+        <a href="/session/deleted">Log Out</a>
+      </li>
+    </ul>
+
+    <div class="clear"></div>
+  </div>
+
+  <!-- Page-Specific Content -->
+  <div class="content">
+
+  
   <h1>{head.title}</h1>
   <h2>Swifty and tasty, you remember !</h2>
 
   <div>{head.description}</div>
 
   <div class="formWrapper">
-    <form id="accountCreate" action="/api/users" method="POST">
+    <form id="accountCreate" action="/api/users" method="PUT">
+      <input type="hidden" name="_method" value="PUT"/>
       <div class="formError"></div>
       <div class="inputWrapper">
         <div class="inputLabel">Your Name</div>
@@ -13,7 +46,7 @@
         <div class="spacerBig"></div>
       </div>
       <div class="inputWrapper">
-        <div class="inputLabel">Your Email</div>
+        <div class="inputLabel">Your Email ( can not be updated! )</div>
         <div class="spacerSmall"></div>
         <input type="text" name="email" placeholder="john@gmail.com" />
         <div class="spacerBig"></div>
@@ -31,7 +64,7 @@
         <div class="spacerBig"></div>
       </div>
       <div class="inputWrapper">
-        <button type="submit" >Get Started</button>
+        <button type="submit" >Update !</button>
       </div>
     </form>
   </div>
