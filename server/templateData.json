@@ -4,6 +4,7 @@
     "head.title": "Get your swifty tasty PIZZAS now !",
     "head.description": "We offer you the oportunity to choose your pizzas from our menu and pay for it."
   },
+
   "account/create":{
     "templateName":"accountCreate",
     "head.title": "Create an Account now !",
@@ -24,6 +25,7 @@
     "head.title": "Your account has been deleted !",
     "head.description": "So sad to let you go, welcome back anytime."
   },
+
   "session/create":{
     "templateName":"sessionCreate",
     "head.title": "Log into your Account now!",
@@ -34,6 +36,7 @@
     "head.title": "You have logged out successfully !",
     "head.description": "Welcome back anytime, hungry you and your hungry friends !"
   },
+  
   "orders":{
     "templateName":"orders",
     "head.title": "Your orders here !",

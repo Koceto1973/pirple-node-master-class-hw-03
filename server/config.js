@@ -16,6 +16,7 @@ environments.staging = {
   'domainNameMailgun':cnfg.domainNameMailgun,
   'templateGlobals' : {
     'appName' : 'Swifty Tasty Pizza',
+    'baseUrl' : 'https://127.0.0.1',
     'companyName' : 'Easy, Inc.',
     'yearCreated' : '2019'
   },
@@ -31,6 +32,7 @@ environments.production = {
   'domainNameMailgun':cnfg.domainNameMailgun,
   'templateGlobals' : {
     'appName' : 'Swifty Tasty Pizza',
+    'baseUrl' : 'https://swiftytastipizza.com',
     'companyName' : 'Easy, Inc.',
     'yearCreated' : '2019'
   },
