@@ -188,5 +188,11 @@ app.formResponseProcessor = function(formId,requestPayload,responsePayload){
       }
     });
   }
+
+  if(formId == 'sessionCreate'){
+    // save the new token and redirect
+    sessionStorage.setItem('token',JSON.stringify(responsePayload));
+    window.location = '/orders';
+  }
 };
 
