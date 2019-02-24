@@ -2,44 +2,58 @@
   "":{
     "templateName":"index",
     "head.title": "Get your swifty tasty PIZZAS now !",
-    "head.description": "We offer you the oportunity to choose your pizzas from our menu and pay for it."
+    "head.description": "We offer you the oportunity to choose your pizzas from our menu and pay for it.",
+    "body.class":"index"
   },
 
   "account/create":{
     "templateName":"accountCreate",
     "head.title": "Create an Account now !",
-    "head.description": "Signup is easy and only takes a few seconds."
+    "head.description": "Signup is easy and only takes a few seconds.",
+    "body.class":"accountCreate"
   },
   "account/edit":{
     "templateName":"accountEdit",
     "head.title": "Edit your Account here !",
-    "head.description": "Carefully amend your details."
+    "head.description": "Carefully amend your details.",
+    "body.class":"accountEdit"
   },
   "account/delete":{
     "templateName":"accountDelete",
     "head.title": "Delete your Account ?",
-    "head.description": "If this is not your intention navigate back."
+    "head.description": "If this is not your intention navigate back.",
+    "body.class":"accountDelete"
   },
   "account/deleted":{
     "templateName":"accountDeleted",
     "head.title": "Your account has been deleted !",
-    "head.description": "So sad to let you go, welcome back anytime."
+    "head.description": "So sad to let you go, welcome back anytime.",
+    "body.class":"accountDeleted"
   },
 
   "session/create":{
     "templateName":"sessionCreate",
     "head.title": "Log into your Account now!",
-    "head.description": "Please enter your email address and password to access your account."
+    "head.description": "Please enter your email address and password to access your account.",
+    "body.class":"sessionCreate"
   },
   "session/deleted":{
     "templateName":"sessionDeleted",
     "head.title": "You have logged out successfully !",
-    "head.description": "Welcome back anytime, hungry you and your hungry friends !"
+    "head.description": "Welcome back anytime, hungry you and your hungry friends !",
+    "body.class":"sessionDeleted"
   },
-  
+
   "orders":{
     "templateName":"orders",
     "head.title": "Your orders here !",
-    "head.description": "You can add, edit of delete them !"
+    "head.description": "You can add, edit of delete them !",
+    "body.class":"orders"
+  },
+  "orders/menu":{
+    "templateName":"ordersMenu",
+    "head.title": "Choose from our menu here !",
+    "head.description": "You can add from one to twenty, but max five per model !",
+    "body.class":"ordersMenu"
   }
 }
