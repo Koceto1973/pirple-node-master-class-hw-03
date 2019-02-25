@@ -50,6 +50,12 @@
     "head.description": "You can add, edit of delete them !",
     "body.class":"orders"
   },
+  "order":{
+    "templateName":"order",
+    "head.title": "Your order is here !",
+    "head.description": "You can edit it once ( within 5 min of posting ), or delete it before payment!",
+    "body.class":"order"
+  },
   "orders/menu":{
     "templateName":"ordersMenu",
     "head.title": "Choose from our menu here !",

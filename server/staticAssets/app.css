@@ -72,7 +72,7 @@ body {
   border-radius: 1vh;
   padding: 1vh 1vw;
   background-color: aquamarine;
-  font-size: 3vh;
+  font-size: 2vh;
 }
 
 .contentError {
@@ -101,7 +101,7 @@ body {
   padding: 0 1vw;
 }
 
-#myMenu {
+#myMenu, #myOrder {
   height: 50vh;
   display: block;
   overflow: auto;

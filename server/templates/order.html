@@ -1,4 +1,4 @@
-<script type="text/javascript" charset="utf-8" src="/staticAssets/appOrders.js"></script>
+<script type="text/javascript" charset="utf-8" src="/staticAssets/appOrder.js"></script>
 <link rel="stylesheet" type="text/css" href="/staticAssets/resets.css" />
 <link rel="stylesheet" type="text/css" href="/staticAssets/app.css" />
 <link href='https://fonts.googleapis.com/css?family=Lemon' rel='stylesheet'>
@@ -19,11 +19,14 @@
         <a href="/account/edit">Account Settings</a>
       </li>
       <li class="loggedIn">
-        <a href="/orders/menu">Order Menu</a>
+        <a href="/orders">My Orders</a>
       </li>
       <li class="loggedIn">
-        <a href="/session/deleted">Log Out</a>
+          <a href="/orders/menu">Order Menu</a>
       </li>
+      <li class="loggedIn">
+          <a href="/session/deleted">Log Out</a>
+        </li>
     </ul>
 
     <div class="clear"></div>
@@ -32,23 +35,27 @@
   <!-- Page-Specific Content -->
   <div class="content">
 
-
   <h1>{head.title}</h1>
   <h2>Swifty and tasty, you remember !</h2>
   <div>{head.description}</div>
-
+  <div><button class="updateOrder">Update your Order</button></div>
+  <div class="spacerBig"></div>
+  <div><button class="deleteOrder">Delete your Order</button></div>
+  <div class="spacerBig"></div>
+  
   <div class="contentError"></div>
-
-  <div id="myOrders">
-   <!-- <div class="orderSelect">
-          <div class="orderTime">${date.toDateString()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}</div>
-            <span class="orderSpan">   </span>
-            <button class="orderView ${order.id}">Preview</button>
-            <span class="orderSpan">   </span>
-            <div class="orderStatus">${order.status}</div>
+  
+  <div id="myOrder">
+      <!-- <div class="pizza">
+          <img src="/staticAssets/pizzas/${pizza}.jpg" alt=""></img>
+          <div class="pizzaSelect">
+            <div class="pizzaName">${pizza} / ${newResponsePayload[pizza].toFixed(2)} $</div>
+            <button class="pizzaOrderLess ${index} ${pizza} ">order less</button>
+            <div class="pizzaOrdered">Ordered : <span class="pizzaOrdered${index}">0</span></div>
+            <button class="pizzaOrderMore ${index} ${pizza} ">order more</button>
           </div>
           <div class="spacerBig"></div>
-        </div> -->
+      </div> -->
   </div>
 
 </div>

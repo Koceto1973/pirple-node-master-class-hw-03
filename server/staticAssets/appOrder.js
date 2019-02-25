@@ -241,12 +241,17 @@ app.loadDataOnPage = function(){
   var bodyClasses = document.querySelector("body").classList;
   var primaryClass = typeof(bodyClasses[0]) == 'string' ? bodyClasses[0] : false;
 
-  // Logic for account settings page
+  // Logic for orders page
   if(primaryClass == 'orders'){
     app.loadOrders();
   }
 
-  // Logic for dashboard page
+  // Logic for order page
+  if(primaryClass == 'order'){
+    app.loadOrder();
+  }
+
+  // Logic for menu page
   if(primaryClass == 'ordersMenu'){
     app.loadOrdersMenu();
   }
@@ -267,7 +272,7 @@ app.loadOrders = function(){
     "Content-Type":"application/json"
   }
 
-  // ask api for the orders
+  // ask api for the menu
   app.client.request(headers,'/api/orders','GET',undefined,undefined,function(newStatusCode,newResponsePayload){
     if(newStatusCode !== 200){
       // Set the contentError field with the error text
@@ -294,16 +299,145 @@ app.loadOrders = function(){
                     `;
         document.getElementById('myOrders').insertAdjacentHTML('beforeend',mold);
       }
+    }
+  });
+}
 
-      // set up listener for order preview
-      document.getElementById('myOrders').addEventListener('click',function(evnt){
-        var orderId = evnt.target.classList[1];
-        // console.log(orderId);
+app.loadOrder = function(){
+  // clear old errors
+  document.querySelector(".contentError").innerHTML = '';
 
-        sessionStorage.setItem('currentOrder', orderId);
-        // preview the order
-        window.location = '/order';
+  // stack headers for the api/menu call
+  var headers = {
+    "token": JSON.parse(sessionStorage.getItem('token')).id,
+    "email": JSON.parse(sessionStorage.getItem('token')).email,
+    "order": sessionStorage.getItem('currentOrder')
+  }
 
+  // ask api for the order
+  app.client.request(headers,'/api/orders','GET',undefined,undefined,function(newStatusCode,newResponsePayload){
+    if(newStatusCode !== 200){
+      // Set the contentError field with the error text
+      document.querySelector(".contentError").innerHTML = 'Sorry, an error has occured. Please try again.';
+      console.log(JSON.stringify(newResponsePayload)); // api error response
+    } else { // If successful
+      // clear old orders if any
+      document.getElementById('myOrder').innerHTML = '';
+      // load the order items
+      var { id, order, date, status } = newResponsePayload;
+      // console.log(id, order, date, status);
+
+      // ask the api to render menu and inject our order quantities
+      app.client.request(headers,'/api/menu','GET',undefined,undefined,function(newStatusCode,responsePayload){
+        if(newStatusCode !== 200){
+          // Set the contentError field with the error text
+          document.querySelector(".contentError").innerHTML = 'Sorry, an error has occured. Please try again.';
+          console.log(JSON.stringify(responsePayload)); // api error response
+        } else { // If successful
+          // clear old menu if any
+          document.getElementById('myOrder').innerHTML = '';
+          // load the menu items
+          var index = 0;
+          for(var pizza in responsePayload){
+            if(responsePayload.hasOwnProperty(pizza)){
+              // console.log(pizza, responsePayload[pizza]);
+              var mold = `
+                      <div class="pizza">
+                        <img src="/staticAssets/pizzas/${pizza}.jpg" alt=""></img>
+                        <div class="pizzaSelect">
+                          <div class="pizzaName">${pizza} / ${responsePayload[pizza].toFixed(2)} $</div>
+                          <button class="pizzaOrderLess ${index} ${pizza} ">order less</button>
+                          <div class="pizzaOrdered">Ordered : <span class="pizzaOrdered${index}">${order[index]}</span></div>
+                          <button class="pizzaOrderMore ${index} ${pizza} ">order more</button>
+                        </div>
+                        <div class="spacerBig"></div>
+                      </div>
+                     `;
+          document.getElementById('myOrder').insertAdjacentHTML('beforeend',mold);
+
+              index++;
+            }
+          }
+
+          // set up the listener for order modification
+          document.getElementById('myOrder').addEventListener('click',function(event){
+            // read the order amend request
+            var amend = event.target.classList[0] === 'pizzaOrderLess' ? 'less' : 'more';
+            var pizzaIndex = event.target.classList[1];
+            var pizzaName = event.target.classList[2];
+            if ( (typeof event.target.classList[3]) !== 'undefined' ){
+              pizzaName += ' ' + event.target.classList[3];
+            }
+            
+            // respond to the order amend request
+            if (amend === 'less'){
+              if(parseInt(document.querySelector('.pizzaOrdered'+pizzaIndex).textContent)>0){
+                document.querySelector('.pizzaOrdered'+pizzaIndex).textContent = parseInt(document.querySelector('.pizzaOrdered'+pizzaIndex).textContent) - 1 ;
+              }
+            } else { // amend === 'more'
+              if ([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16].reduce((acc,curr)=>
+                acc + parseInt(document.querySelector('.pizzaOrdered'+curr).textContent),0)<20){ // less than 20 ttl ordered
+                if(parseInt(document.querySelector('.pizzaOrdered'+pizzaIndex).textContent)<5){
+                  document.querySelector('.pizzaOrdered'+pizzaIndex).textContent = parseInt(document.querySelector('.pizzaOrdered'+pizzaIndex).textContent) + 1 ;
+                }
+              }
+            }
+          });
+
+          // set up the listener for order update
+          document.querySelector('.updateOrder').addEventListener('click', function(){
+            // place the new order
+            headers = {
+              "token": JSON.parse(sessionStorage.getItem('token')).id,
+              "order": sessionStorage.getItem('currentOrder'),
+              "Content-Type":"application/json"
+            };
+
+
+            
+            payload = {
+              "email": JSON.parse(sessionStorage.getItem('token')).email,
+              "order": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16].map((el)=>
+                              parseInt(document.querySelector('.pizzaOrdered'+el).textContent))
+            };
+
+            app.client.request(headers,'/api/orders','PUT',undefined,payload,function(newStatusCode,response){
+              if(newStatusCode!==200){
+                // Set the contentError field with the error text
+                document.querySelector(".contentError").innerHTML = 'Sorry, an error has occured. Please try again.';
+                console.log(JSON.stringify(response)); // api error response
+              } else {
+                // redirect to orders page
+                window.location = '/orders';
+              }
+            });
+          });
+
+          // set up the listener for order deletion
+          document.querySelector('.deleteOrder').addEventListener('click', function(){
+            // place the new order
+            headers = {
+              "token": JSON.parse(sessionStorage.getItem('token')).id,
+              "email": JSON.parse(sessionStorage.getItem('token')).email,
+              "Content-Type":"application/json"
+            };
+            
+            query = {
+              "id": sessionStorage.getItem('currentOrder')
+            };
+
+            app.client.request(headers,'/api/orders','DELETE',query,undefined,function(newStatusCode,response){
+              if(newStatusCode!==200){
+                // Set the contentError field with the error text
+                document.querySelector(".contentError").innerHTML = 'Sorry, an error has occured. Please try again.';
+                console.log(JSON.stringify(response)); // api error response
+              } else {
+                // redirect to orders page
+                window.location = '/orders';
+              }
+            });
+          });
+        }
       });
     }
   });
