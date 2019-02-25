@@ -60,7 +60,7 @@ body {
   text-align: center;
 }
 
-.content div {
+.content > div {
   font-size: 1.5vw;
   text-align: center;
 }
@@ -77,6 +77,28 @@ body {
 
 .contentError {
   color: red;
+}
+
+#myOrders {
+  height: 50vh;
+  display: block;
+  overflow: auto;
+}
+
+.orderSelect {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.orderTime, .orderStatus {
+  font-size: 3vh;
+  line-height: 4vh;
+  height: 4vh;
+}
+
+.orderSpan {
+  padding: 0 1vw;
 }
 
 #myMenu {
@@ -109,6 +131,7 @@ body {
   background-color: aquamarine;
   font-size: 1.5vh;
 }
+
 
 
 form .formError {

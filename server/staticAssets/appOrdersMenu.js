@@ -288,9 +288,9 @@ app.loadOrdersMenu = function(){
                       <div class="pizza">
                         <img src="/staticAssets/pizzas/${pizza}.jpg" alt=""></img>
                         <div class="pizzaSelect">
-                          <div class="pizzaName">${pizza}</div>
+                          <div class="pizzaName">${pizza} / ${newResponsePayload[pizza].toFixed(2)} $</div>
                           <button class="pizzaOrderLess ${index} ${pizza} ">order less</button>
-                          <div class="pizzaOrdered">Ordered : <div class="pizzaOrdered${index}">0</div></div>
+                          <div class="pizzaOrdered">Ordered : <span class="pizzaOrdered${index}">0</span></div>
                           <button class="pizzaOrderMore ${index} ${pizza} ">order more</button>
                         </div>
                         <div class="spacerBig"></div>
@@ -299,7 +299,7 @@ app.loadOrdersMenu = function(){
           document.getElementById('myMenu').insertAdjacentHTML('beforeend',mold);
           index++ ;
         }
-      }
+      };
 
       // set up the listener for order updates
       document.getElementById('myMenu').addEventListener('click',function(event){
@@ -350,7 +350,7 @@ app.loadOrdersMenu = function(){
             window.location = '/orders';
           }
         });
-      })
+      });
     }
   });
 }

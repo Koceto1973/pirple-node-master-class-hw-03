@@ -3,6 +3,8 @@ var app = {};
 // Call the init processes after the window loads
 window.onload = function(){
   app.bindForm();
+
+  app.loadDataOnPage();
 };
 
 // AJAX Client (for RESTful API)
@@ -131,8 +133,14 @@ app.bindForm = function(){
         // If the method is DELETE, the payload should be a queryStringObject instead
         var queryStringObject = method == 'DELETE' ? payload : {};
 
+        // bind token if any
+        var headers;
+        if(sessionStorage.getItem('token')) {
+          headers = { 'token':JSON.parse(sessionStorage.getItem('token')).id};
+        }
+
         // Call the API, on success app.formResponseProcessor(formId,payload,responsePayload);
-        app.client.request(undefined,path,method,queryStringObject,payload,function(statusCode,responsePayload){
+        app.client.request(headers,path,method,queryStringObject,payload,function(statusCode,responsePayload){
           // Display an error on the form if needed
           if(statusCode !== 200){
 
@@ -194,5 +202,193 @@ app.formResponseProcessor = function(formId,requestPayload,responsePayload){
     sessionStorage.setItem('token',JSON.stringify(responsePayload));
     window.location = '/orders';
   }
+
+  if(formId == 'accountEdit'){
+    // Take the email and password, and use it to log the user in
+    var newPayload = {
+      'email' : requestPayload.email,
+      'password' : requestPayload.password
+    };
+
+    app.client.request(undefined,'/api/tokens','POST',undefined,newPayload,function(newStatusCode,newResponsePayload){
+      // Display an error on the form if needed
+      if(newStatusCode !== 200){
+
+        // Set the formError field with the error text
+        document.querySelector("#"+formId+" .formError").innerHTML = 'Sorry, an error has occured. Please try again.';
+        // Show (unhide) the form error field on the form
+        document.querySelector("#"+formId+" .formError").style.display = 'block';
+
+      } else {
+        // If successful, set the token and redirect the user
+        sessionStorage.setItem('token',JSON.stringify(newResponsePayload));
+        window.location = '/orders';
+      }
+    });
+  }
+
+  if(formId == 'accountDelete'){
+    // If successful, redirect the user
+    window.location = '/account/deleted';
+  }
+
+  
 };
 
+// Load respectful data on the page ( menu, orders )
+app.loadDataOnPage = function(){
+  // Get the current page from the body class
+  var bodyClasses = document.querySelector("body").classList;
+  var primaryClass = typeof(bodyClasses[0]) == 'string' ? bodyClasses[0] : false;
+
+  // Logic for account settings page
+  if(primaryClass == 'orders'){
+    app.loadOrders();
+  }
+
+  // Logic for dashboard page
+  if(primaryClass == 'ordersMenu'){
+    app.loadOrdersMenu();
+  }
+};
+
+app.logUserOut = function(){
+  console.log('Logging the user out ...');
+}
+
+app.loadOrders = function(){
+  // clear old errors
+  document.querySelector(".contentError").innerHTML = '';
+
+  // stack headers for the api/menu call
+  var headers = {
+    "token": JSON.parse(sessionStorage.getItem('token')).id,
+    "email": JSON.parse(sessionStorage.getItem('token')).email,
+    "Content-Type":"application/json"
+  }
+
+  // ask api for the menu
+  app.client.request(headers,'/api/orders','GET',undefined,undefined,function(newStatusCode,newResponsePayload){
+    if(newStatusCode !== 200){
+      // Set the contentError field with the error text
+      document.querySelector(".contentError").innerHTML = 'Sorry, an error has occured. Please try again.';
+      console.log(JSON.stringify(newResponsePayload)); // api error response
+    } else { // If successful
+      // clear old orders if any
+      document.getElementById('myOrders').innerHTML = '';
+      // load the orders items
+      for( var i=0; i<newResponsePayload.length; i++){
+        var order = newResponsePayload[i];
+        var date = new Date(order.date);
+        var mold = `
+                    <div class="order">
+                      <div class="orderSelect">
+                        <div class="orderTime">${date.toDateString()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}</div>
+                        <span class="orderSpan">   </span>
+                        <button class="orderView ${order.id}">Preview</button>
+                        <span class="orderSpan">   </span>
+                        <div class="orderStatus">${order.status}</div>
+                      </div>
+                      <div class="spacerBig"></div>
+                    </div>
+                    `;
+        document.getElementById('myOrders').insertAdjacentHTML('beforeend',mold);
+      }
+    }
+  });
+}
+
+app.loadOrdersMenu = function(){
+  // clear old errors
+  document.querySelector(".contentError").innerHTML = '';
+
+  // stack headers for the api/menu call
+  var headers = {
+    "token": JSON.parse(sessionStorage.getItem('token')).id,
+    "email":JSON.parse(sessionStorage.getItem('token')).email
+  }
+
+  // ask api for the menu
+  app.client.request(headers,'/api/menu','GET',undefined,undefined,function(newStatusCode,newResponsePayload){
+    if(newStatusCode !== 200){
+      // Set the contentError field with the error text
+      document.querySelector(".contentError").innerHTML = 'Sorry, an error has occured. Please try again.';
+      console.log(JSON.stringify(newResponsePayload)); // api error response
+    } else { // If successful
+      // clear old menu if any
+      document.getElementById('myMenu').innerHTML = '';
+      // load the menu items
+      var index = 0;
+      for(var pizza in newResponsePayload){
+        if(newResponsePayload.hasOwnProperty(pizza)){
+          // console.log(pizza, newResponsePayload[pizza]);
+          var mold = `
+                      <div class="pizza">
+                        <img src="/staticAssets/pizzas/${pizza}.jpg" alt=""></img>
+                        <div class="pizzaSelect">
+                          <div class="pizzaName">${pizza} / ${newResponsePayload[pizza].toFixed(2)} $</div>
+                          <button class="pizzaOrderLess ${index} ${pizza} ">order less</button>
+                          <div class="pizzaOrdered">Ordered : <span class="pizzaOrdered${index}">0</span></div>
+                          <button class="pizzaOrderMore ${index} ${pizza} ">order more</button>
+                        </div>
+                        <div class="spacerBig"></div>
+                      </div>
+                     `;
+          document.getElementById('myMenu').insertAdjacentHTML('beforeend',mold);
+          index++ ;
+        }
+      }
+
+      // set up the listener for order updates
+      document.getElementById('myMenu').addEventListener('click',function(event){
+        // read the order amend request
+        var amend = event.target.classList[0] === 'pizzaOrderLess' ? 'less' : 'more';
+        var pizzaIndex = event.target.classList[1];
+        var pizzaName = event.target.classList[2];
+        if ( (typeof event.target.classList[3]) !== 'undefined' ){
+          pizzaName += ' ' + event.target.classList[3];
+        }
+        
+        // respond to the order amend request
+        if (amend === 'less'){
+          if(parseInt(document.querySelector('.pizzaOrdered'+pizzaIndex).textContent)>0){
+            document.querySelector('.pizzaOrdered'+pizzaIndex).textContent = parseInt(document.querySelector('.pizzaOrdered'+pizzaIndex).textContent) - 1 ;
+          }
+        } else { // amend === 'more'
+          if ([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16].reduce((acc,curr)=>
+            acc + parseInt(document.querySelector('.pizzaOrdered'+curr).textContent),0)<20){ // less than 20 ttl ordered
+            if(parseInt(document.querySelector('.pizzaOrdered'+pizzaIndex).textContent)<5){
+              document.querySelector('.pizzaOrdered'+pizzaIndex).textContent = parseInt(document.querySelector('.pizzaOrdered'+pizzaIndex).textContent) + 1 ;
+            }
+          }
+        }
+      });
+
+      // set up event listener for the order placement
+      document.querySelector('.placeOrder').addEventListener('click',function(){
+        // place the new order
+        headers = {
+          "token": JSON.parse(sessionStorage.getItem('token')).id,
+          "Content-Type":"application/JSON"
+        };
+
+        payload = {
+          "email": JSON.parse(sessionStorage.getItem('token')).email,
+          "order": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16].map((el)=>
+                          parseInt(document.querySelector('.pizzaOrdered'+el).textContent))
+        }
+
+        app.client.request(headers,'/api/orders','POST',undefined,payload,function(newStatusCode,newResponsePayload){
+          if(newStatusCode!==200){
+            // Set the contentError field with the error text
+            document.querySelector(".contentError").innerHTML = 'Sorry, an error has occured. Please try again.';
+            console.log(JSON.stringify(newResponsePayload)); // api error response
+          } else {
+            // redirect to orders page
+            window.location = '/orders';
+          }
+        });
+      })
+    }
+  });
+}

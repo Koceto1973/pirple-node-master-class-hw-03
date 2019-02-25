@@ -605,6 +605,7 @@ handlers._orders.get = function(data,callback){ // callback(200,orderDatas)
                       var currentOrder = {};
                       currentOrder.id = orderData.id;
                       currentOrder.order = orderData.order;
+                      currentOrder.date = orderData.date;
                       currentOrder.status = orderData.status;
                       userOrders.push(currentOrder);
                     } else {
