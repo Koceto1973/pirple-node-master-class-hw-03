@@ -91,10 +91,20 @@ body {
   justify-content: center;
 }
 
-.orderTime, .orderStatus {
+.orderTime, .orderStatus, .orderTotal {
   font-size: 3vh;
   line-height: 4vh;
   height: 4vh;
+}
+
+.order button {
+  box-sizing: border-box;
+  border: 2px solid black;
+  border-radius: 1vh;
+  padding: 1vh 1vw;
+  background-color: aquamarine;
+  display: inline-block;
+  width: auto;
 }
 
 .orderSpan {

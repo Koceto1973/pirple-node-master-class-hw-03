@@ -47,7 +47,7 @@
   "orders":{
     "templateName":"orders",
     "head.title": "Your orders here !",
-    "head.description": "You can add, edit of delete them !",
+    "head.description": "You can check Preview to edit or delete them !",
     "body.class":"orders"
   },
   "order":{

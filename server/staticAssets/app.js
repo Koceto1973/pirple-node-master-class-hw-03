@@ -277,36 +277,84 @@ app.loadOrders = function(){
       document.querySelector(".contentError").innerHTML = 'Sorry, an error has occured. Please try again.';
       console.log(JSON.stringify(newResponsePayload)); // api error response
     } else { // If successful
-      // clear old orders if any
-      document.getElementById('myOrders').innerHTML = '';
-      // load the orders items
-      for( var i=0; i<newResponsePayload.length; i++){
-        var order = newResponsePayload[i];
-        var date = new Date(order.date);
-        var mold = `
-                    <div class="order">
-                      <div class="orderSelect">
-                        <div class="orderTime">${date.toDateString()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}</div>
-                        <span class="orderSpan">   </span>
-                        <button class="orderView ${order.id}">Preview</button>
-                        <span class="orderSpan">   </span>
-                        <div class="orderStatus">${order.status}</div>
-                      </div>
-                      <div class="spacerBig"></div>
-                    </div>
-                    `;
-        document.getElementById('myOrders').insertAdjacentHTML('beforeend',mold);
-      }
+      var orderTotal = 0;
+      // ask api for the menu
+      var menu = {};
+      app.client.request(headers,'/api/menu','GET',undefined,undefined,function(newStatusCode,menuPayload){
+        if(newStatusCode !== 200){
+          // Set the contentError field with the error text
+          document.querySelector(".contentError").innerHTML = 'Sorry, an error has occured. Please try again.';
+          console.log(JSON.stringify(menuPayload)); // api error response
+        } else { // If successful
+          // get the menu prices
+          var prices = [];
+          for( var pizza in menuPayload){
+            if (menuPayload.hasOwnProperty(pizza)){
+              prices.push(menuPayload[pizza]);
+            }
+          }
+          
+          // clear old orders if any
+          document.getElementById('myOrders').innerHTML = '';
+          // load the orders items
+          for( var i=0; i<newResponsePayload.length; i++){
+            var order = newResponsePayload[i];
+            
+            var orderTotal = order.order.reduce((acc,curr,idx) => acc+curr*prices[idx],0);
 
-      // set up listener for order preview
-      document.getElementById('myOrders').addEventListener('click',function(evnt){
-        var orderId = evnt.target.classList[1];
-        // console.log(orderId);
+            var date = new Date(order.date);
+            var mold = `
+                        <div class="order">
+                          <div class="orderSelect">
+                            <div class="orderTime">${date.toDateString()} ${date.getHours()<10 ? '0' : ''}${date.getHours()}:${date.getMinutes()<10 ? '0' : ''}${date.getMinutes()}:${date.getSeconds()<10 ? '0' : ''}${date.getSeconds()}</div>
+                            <span class="orderSpan">   </span>
+                            <button class="orderPreview ${order.id}">Preview</button>
+                            <span class="orderSpan">   </span>
+                            <div class="orderStatus">${order.status}</div>
+                            <span class="orderSpan">   </span>
+                            <button class="orderCheckout ${order.id}">Checkout</button>
+                            <span class="orderSpan">   </span>
+                            <div class="orderTotal">${orderTotal.toFixed(2)} $</div>
+                          </div>
+                          <div class="spacerBig"></div>
+                        </div>
+                        `;
+            document.getElementById('myOrders').insertAdjacentHTML('beforeend',mold);
+          }
 
-        sessionStorage.setItem('currentOrder', orderId);
-        // preview the order
-        window.location = '/order';
+          // set up listeners
+          document.getElementById('myOrders').addEventListener('click',function(evnt){
+            var orderId = evnt.target.classList[1];
+            sessionStorage.setItem('currentOrder', orderId);
+            
+            if(evnt.target.classList[0] === 'orderPreview'){
+              // preview the order
+              window.location = '/order';
+            } else { // evnt.target.classList[0] === 'orderCheckout'
+              var query = {
+                "currency"   : "usd",
+                "description":"Swifty and Tasty pizzas payment",
+                "id"         : orderId,
+                "source"     : "tok_visa"
+              }
 
+              console.log(headers);
+              console.log(query);
+
+              // affect the checkout payment
+              app.client.request(headers,'/api/orders.payments','POST',query,undefined,function(resStatus,resPayload){
+                if(resStatus !== 200){
+                  // Set the contentError field with the error text
+                  document.querySelector(".contentError").innerHTML = 'Sorry, an error has occured. Please try again.';
+                  console.log(JSON.stringify(resPayload)); // api error response
+                } else { // If successful
+                  // reload updated orders page
+                  window.location = '/orders';
+                }
+              });
+            }
+          });
+        }
       });
     }
   });
