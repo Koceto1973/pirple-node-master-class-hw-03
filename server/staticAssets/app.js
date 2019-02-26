@@ -320,15 +320,15 @@ app.loadOrders = function(){
             var mold = `
                         <div class="order">
                           <div class="orderSelect">
-                            <div class="orderTime">${date.toDateString()} ${date.getHours()<10 ? '0' : ''}${date.getHours()}:${date.getMinutes()<10 ? '0' : ''}${date.getMinutes()}:${date.getSeconds()<10 ? '0' : ''}${date.getSeconds()}</div>
-                            <span class="orderSpan">   </span>
                             <button class="orderPreview ${order.id}">Preview</button>
-                            <span class="orderSpan">   </span>
-                            <div class="orderStatus">${order.status}</div>
                             <span class="orderSpan">   </span>
                             <button class="orderCheckout ${order.id}">Checkout</button>
                             <span class="orderSpan">   </span>
-                            <div class="orderTotal">${orderTotal.toFixed(2)} $</div>
+                            <div class="orderTotal">${orderTotal.toFixed(2)<10 ? '0' : ''}${orderTotal.toFixed(2)} $</div>
+                            <span class="orderSpan">   </span>
+                            <div class="orderTime">${date.toDateString()} ${date.getHours()<10 ? '0' : ''}${date.getHours()}:${date.getMinutes()<10 ? '0' : ''}${date.getMinutes()}:${date.getSeconds()<10 ? '0' : ''}${date.getSeconds()}</div>
+                            <span class="orderSpan">   </span>
+                            <div class="orderStatus">${order.status}</div>
                           </div>
                           <div class="spacerBig"></div>
                         </div>
@@ -344,7 +344,7 @@ app.loadOrders = function(){
             if(evnt.target.classList[0] === 'orderPreview'){
               // preview the order
               window.location = '/order';
-            } else { // evnt.target.classList[0] === 'orderCheckout'
+            } else if (evnt.target.classList[0] === 'orderCheckout'){
               var query = {
                 "currency"   : "usd",
                 "description":"Swifty and Tasty pizzas payment",
