@@ -367,7 +367,7 @@ handlers._tokens.get = function(data,callback){ // callback(200,tokenObject);
   }
 };
 
-// Tokens - put, to exted the token validity
+// Tokens - put, to exted the token validity for 1 hour from request time
 // Required data: id, extend
 // Optional data: none
 handlers._tokens.put = function(data,callback){ // callback(200)

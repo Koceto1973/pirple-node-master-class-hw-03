@@ -276,6 +276,5 @@ helpers.getStaticAsset = function(fileName,callback){ // callback(false,data);
     callback('A valid file name was not specified');
   }
 };
-
 // Export the module
 module.exports = helpers;

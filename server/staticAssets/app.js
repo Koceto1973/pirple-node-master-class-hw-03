@@ -4,6 +4,12 @@ var app = {};
 window.onload = function(){
   app.bindForm();
 
+  app.bindLogoutButton();
+
+  app.getSessionToken();
+
+  app.tokenRenewalLoop();
+
   app.loadDataOnPage();
 };
 
@@ -135,8 +141,8 @@ app.bindForm = function(){
 
         // bind token if any
         var headers;
-        if(sessionStorage.getItem('token')) {
-          headers = { 'token':JSON.parse(sessionStorage.getItem('token')).id};
+        if(app.config.sessionToken) {
+          headers = { 'token':app.config.sessionToken.id};
         }
 
         // Call the API, on success app.formResponseProcessor(formId,payload,responsePayload);
@@ -171,7 +177,7 @@ app.bindForm = function(){
 
 // Form response processor
 app.formResponseProcessor = function(formId,requestPayload,responsePayload){
-  var functionToCall = false;
+  
   // If account creation was successful, try to immediately log the user in
   if(formId == 'accountCreate'){
     // Take the email and password, and use it to log the user in
@@ -191,7 +197,7 @@ app.formResponseProcessor = function(formId,requestPayload,responsePayload){
 
       } else {
         // If successful, set the token and redirect the user
-        sessionStorage.setItem('token',JSON.stringify(newResponsePayload));
+        app.setSessionToken(newResponsePayload);
         window.location = '/orders';
       }
     });
@@ -199,14 +205,14 @@ app.formResponseProcessor = function(formId,requestPayload,responsePayload){
 
   if(formId == 'sessionCreate'){
     // save the new token and redirect
-    sessionStorage.setItem('token',JSON.stringify(responsePayload));
+    app.setSessionToken(responsePayload);
     window.location = '/orders';
   }
 
   if(formId == 'accountEdit'){
     // Take the email and password, and use it to log the user in
     var newPayload = {
-      'email' : requestPayload.email,
+      'email'    : requestPayload.email,
       'password' : requestPayload.password
     };
 
@@ -221,7 +227,7 @@ app.formResponseProcessor = function(formId,requestPayload,responsePayload){
 
       } else {
         // If successful, set the token and redirect the user
-        sessionStorage.setItem('token',JSON.stringify(newResponsePayload));
+        app.setSessionToken(newResponsePayload);
         window.location = '/orders';
       }
     });
@@ -233,31 +239,21 @@ app.formResponseProcessor = function(formId,requestPayload,responsePayload){
   }
 };
 
-// Load respectful data on the page ( menu, orders )
+// Load respectful data on the page ( menu, orders or order )
 app.loadDataOnPage = function(){
   // Get the current page from the body class
   var bodyClasses = document.querySelector("body").classList;
   var primaryClass = typeof(bodyClasses[0]) == 'string' ? bodyClasses[0] : false;
 
   // Logic for orders page
-  if(primaryClass == 'orders'){
-    app.loadOrders();
-  }
+  if(primaryClass == 'orders'){ app.loadOrders(); }
 
   // Logic for order page
-  if(primaryClass == 'order'){
-    app.loadOrder();
-  }
+  if(primaryClass == 'order'){ app.loadOrder(); }
 
   // Logic for menu page
-  if(primaryClass == 'ordersMenu'){
-    app.loadOrdersMenu();
-  }
+  if(primaryClass == 'ordersMenu'){ app.loadOrdersMenu(); }
 };
-
-app.logUserOut = function(){
-  console.log('Logging the user out ...');
-}
 
 app.loadOrders = function(){
   // clear old errors
@@ -265,8 +261,8 @@ app.loadOrders = function(){
 
   // stack headers for the api/menu call
   var headers = {
-    "token": JSON.parse(sessionStorage.getItem('token')).id,
-    "email": JSON.parse(sessionStorage.getItem('token')).email,
+    "token": app.config.sessionToken.id,
+    "email": app.config.sessionToken.email,
     "Content-Type":"application/json"
   }
 
@@ -277,9 +273,7 @@ app.loadOrders = function(){
       document.querySelector(".contentError").innerHTML = 'Sorry, an error has occured. Please try again.';
       console.log(JSON.stringify(newResponsePayload)); // api error response
     } else { // If successful
-      var orderTotal = 0;
       // ask api for the menu
-      var menu = {};
       app.client.request(headers,'/api/menu','GET',undefined,undefined,function(newStatusCode,menuPayload){
         if(newStatusCode !== 200){
           // Set the contentError field with the error text
@@ -338,9 +332,6 @@ app.loadOrders = function(){
                 "source"     : "tok_visa"
               }
 
-              console.log(headers);
-              console.log(query);
-
               // affect the checkout payment
               app.client.request(headers,'/api/orders.payments','POST',query,undefined,function(resStatus,resPayload){
                 if(resStatus !== 200){
@@ -366,8 +357,8 @@ app.loadOrder = function(){
 
   // stack headers for the api/menu call
   var headers = {
-    "token": JSON.parse(sessionStorage.getItem('token')).id,
-    "email": JSON.parse(sessionStorage.getItem('token')).email,
+    "token": app.config.sessionToken.id,
+    "email": app.config.sessionToken.email,
     "order": sessionStorage.getItem('currentOrder')
   }
 
@@ -445,13 +436,13 @@ app.loadOrder = function(){
           document.querySelector('.updateOrder').addEventListener('click', function(){
             // place the new order
             headers = {
-              "token": JSON.parse(sessionStorage.getItem('token')).id,
+              "token": app.config.sessionToken.id,
               "order": sessionStorage.getItem('currentOrder'),
               "Content-Type":"application/json"
             };
             
             payload = {
-              "email": JSON.parse(sessionStorage.getItem('token')).email,
+              "email": app.config.sessionToken.email,
               "order": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16].map((el)=>
                               parseInt(document.querySelector('.pizzaOrdered'+el).textContent))
             };
@@ -472,8 +463,8 @@ app.loadOrder = function(){
           document.querySelector('.deleteOrder').addEventListener('click', function(){
             // place the new order
             headers = {
-              "token": JSON.parse(sessionStorage.getItem('token')).id,
-              "email": JSON.parse(sessionStorage.getItem('token')).email,
+              "token": app.config.sessionToken.id,
+              "email": app.config.sessionToken.email,
               "Content-Type":"application/json"
             };
             
@@ -504,8 +495,8 @@ app.loadOrdersMenu = function(){
 
   // stack headers for the api/menu call
   var headers = {
-    "token": JSON.parse(sessionStorage.getItem('token')).id,
-    "email":JSON.parse(sessionStorage.getItem('token')).email
+    "token": app.config.sessionToken.id,
+    "email":app.config.sessionToken.email
   }
 
   // ask api for the menu
@@ -568,15 +559,15 @@ app.loadOrdersMenu = function(){
       document.querySelector('.placeOrder').addEventListener('click',function(){
         // place the new order
         headers = {
-          "token": JSON.parse(sessionStorage.getItem('token')).id,
-          "Content-Type":"application/JSON"
+          "token": app.config.sessionToken.id,
+          "Content-Type":"application/json"
         };
 
         payload = {
-          "email": JSON.parse(sessionStorage.getItem('token')).email,
+          "email": app.config.sessionToken.email,
           "order": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16].map((el)=>
                           parseInt(document.querySelector('.pizzaOrdered'+el).textContent))
-        }
+        };
 
         app.client.request(headers,'/api/orders','POST',undefined,payload,function(newStatusCode,newResponsePayload){
           if(newStatusCode!==200){
@@ -588,7 +579,143 @@ app.loadOrdersMenu = function(){
             window.location = '/orders';
           }
         });
-      })
+      });
     }
   });
 }
+
+// container for sessionToken
+app.config = {
+  'sessionToken' : false
+};
+
+// Loop app.renewToken() each minute to renew token ( extend it )
+app.tokenRenewalLoop = function(){
+  setInterval(function(){
+    app.renewToken(function(err){
+      if(!err){
+        console.log("Token renewed successfully @ "+Date.now());
+      }
+    });
+  },1000 * 60);
+};
+
+// Get the session token object from localstorage and set it in the app.config sessionToken and in html body class
+app.getSessionToken = function(){
+  var tokenString = localStorage.getItem('token');
+  if(typeof(tokenString) == 'string'){
+    try{
+      var token = JSON.parse(tokenString);
+      app.config.sessionToken = token;
+      if(typeof(token) == 'object'){
+        app.setLoggedInClass(true);
+      } else {
+        app.setLoggedInClass(false);
+      }
+    }catch(e){
+      app.config.sessionToken = false;
+      app.setLoggedInClass(false);
+    }
+  }
+};
+
+// Renew the token ( extend it )
+app.renewToken = function(callback){
+  // get the current token if any
+  var currentToken = typeof(app.config.sessionToken) == 'object' ? app.config.sessionToken : false;
+  if(currentToken){ // if token exist, update the token with a new expiration
+    // build payload to ask api for token extension
+    var payload = {
+      'id' : currentToken.id,
+      'extend' : true,
+    };
+    // ask the api to extend the token
+    app.client.request(undefined,'api/tokens','PUT',undefined,payload,function(statusCode,responsePayload){
+      // Display an error on the form if needed
+      if(statusCode == 200){ // if token is extended
+        // Get the new token details
+        var queryStringObject = {'id' : currentToken.id};
+        app.client.request(undefined,'api/tokens','GET',queryStringObject,undefined,function(statusCode,responsePayload){
+          // Display an error on the form if needed
+          if(statusCode == 200){
+            app.setSessionToken(responsePayload);
+            callback(false);
+          } else {
+            app.setSessionToken(false);
+            callback(true);
+          }
+        });
+      } else {
+        app.setSessionToken(false);
+        callback(true);
+      }
+    });
+  } else {
+    app.setSessionToken(false);
+    callback(true);
+  }
+};
+
+// Set the session token ( or false ) in the app.config object as well as localstorage and html body class loggedIn by app.setLoggedInClass()
+app.setSessionToken = function(token){
+  app.config.sessionToken = token;
+  var tokenString = JSON.stringify(token);
+  localStorage.setItem('token',tokenString);
+  if(typeof(token) == 'object'){
+    app.setLoggedInClass(true);
+  } else {
+    app.setLoggedInClass(false);
+  }
+};
+
+// Set (or remove) the loggedIn class from the html body
+app.setLoggedInClass = function(add){
+  var target = document.querySelector("body");
+  if(add){
+    target.classList.add('loggedIn');
+  } else {
+    target.classList.remove('loggedIn');
+  }
+};
+
+// Bind the logout button, adding the click event listener to trigger app.logUserOut()
+app.bindLogoutButton = function(){
+
+  if (document.getElementById("logoutButton") !== null){
+
+    document.getElementById("logoutButton").addEventListener("click", function(e){
+
+      // Stop it from redirecting anywhere
+      e.preventDefault();
+  
+      // Log the user out
+      app.logUserOut(true);
+  
+    });
+  }
+  
+};
+
+// Log the user out then redirect to /session/deleted if needed
+app.logUserOut = function(redirectUser){
+  // Set redirectUser default to true
+  redirectUser = typeof(redirectUser) == 'boolean' ? redirectUser : true;
+
+  // Get the current token id
+  var tokenId = typeof(app.config.sessionToken.id) == 'string' ? app.config.sessionToken.id : false;
+
+  // Send the current token to the tokens endpoint to delete it
+  var queryStringObject = {
+    'id' : tokenId
+  };
+  app.client.request(undefined,'api/tokens','DELETE',queryStringObject,undefined,function(statusCode,responsePayload){
+    // Set the app.config token as false
+    app.setSessionToken(false);
+
+    // Send the user to the logged out page
+    if(redirectUser){
+      window.location = '/session/deleted';
+    }
+
+  });
+};

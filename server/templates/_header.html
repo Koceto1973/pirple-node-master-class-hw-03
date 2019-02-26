@@ -30,3 +30,43 @@
     <link href='https://fonts.googleapis.com/css?family=Lemon' rel='stylesheet'>
     
   </head>
+
+  <body class="{body.class}">
+      <!-- Page Wrapper -->
+      <div class="wrapper">
+
+        <!-- Header -->
+        <div class="header">
+          <!-- Logo -->
+          <a class="logo" href="/">
+            <img src="/staticAssets/logo.png" alt="Logo" />
+          </a>
+          <!-- Navigation -->
+          <ul class="menu">
+            <li class="loggedIn loggedOut">
+              <a href="/">Home</a>
+            </li>
+            <li class="loggedOut">
+              <a href="/account/create">SignUp</a>
+            </li>
+            <li class="loggedIn">
+              <a href="/account/delete">SignOff</a>
+            </li>
+            <li class="loggedIn">
+              <a href="/account/edit">Settings</a>
+            </li>
+            <li class="loggedIn">
+              <a href="/orders">Orders</a>
+            </li>
+            <li class="loggedIn">
+              <a href="/orders/menu">Menu</a>
+            </li>
+            <li class="loggedOut">
+              <a href="/session/create">LogIn</a>
+            </li>
+            <li class="loggedIn" id="logoutButton">
+              <a href="/session/deleted">LogOut</a>
+            </li>
+          </ul>
+      
+        </div>
