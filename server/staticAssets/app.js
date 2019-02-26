@@ -81,8 +81,21 @@ app.client.request = function(headers,path,method,queryStringObject,payload,call
 };
 
 app.loadNavButtons = function(){
-  // render only relevant nav buttons
-  console.log(document.querySelector('body').classList);
+  // get all nav buttons
+  var navButtons = document.querySelector('.menu').children;
+  var isLoggedIn = ( typeof app.config.sessionToken ) === 'object'; 
+
+  // for each one, show it if only relevant to user login state
+  for (var i = 1; i < navButtons.length; i++) {
+    
+    if(navButtons[i].classList.contains('loggedIn') && !isLoggedIn){
+      navButtons[i].style.display = 'none';
+    }
+
+    if(navButtons[i].classList.contains('loggedOut') && isLoggedIn){
+      navButtons[i].style.display = 'none';
+    }
+  }
 }
 
 app.bindForm = function(){
