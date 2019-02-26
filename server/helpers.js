@@ -199,14 +199,16 @@ helpers.createMailgunNotification = function(email, notification, callback){
 
 // Get the string content of a template, and use provided templateData for string interpolation
 helpers.getTemplate = function(templateData,callback){
-  templateName = typeof(templateData.templateName) == 'string' && templateData.templateName.length > 0 ? templateData.templateName : false;
   templateData = typeof(templateData) == 'object' && templateData !== null ? templateData : {};
+  var tempData = JSON.parse(JSON.stringify(templateData));
+  var templateName = typeof(tempData.templateName) == 'string' && tempData.templateName.length > 0 ? tempData.templateName : false;
+
   if(templateName){
     var templatesDir = path.join(__dirname,'/templates/');
     fs.readFile(templatesDir+templateName+'.html', 'utf8', function(err,str){
       if(!err && str && str.length > 0){
         // Do interpolation on the string
-        var finalString = helpers.interpolate(str,templateData);
+        var finalString = helpers.interpolate(str,tempData);
         callback(false,finalString);
       } else {
         callback(true,'No template could be found');
@@ -219,13 +221,17 @@ helpers.getTemplate = function(templateData,callback){
 
 // Add the universal header and footer to a string, and pass provided data object to header and footer for interpolation
 helpers.addUniversalTemplates = function(str,templateData,callback){
-  str = typeof(str) == 'string' && str.length > 0 ? str : '';
+  str = typeof(str) == 'string' && str.length > 0 ? str : ''; 
   templateData = typeof(templateData) == 'object' && templateData !== null ? templateData : {};
+  var tempData = JSON.parse(JSON.stringify(templateData));
+
   // Get the header
-  helpers.getTemplate({templateName:'_header'},function(err,headerString){
+  tempData.templateName = '_header';
+  helpers.getTemplate(tempData,function(err,headerString){
     if(!err && headerString){
       // Get the footer
-      helpers.getTemplate({templateName:'_footer'},function(err,footerString){
+      tempData.templateName = '_footer';
+      helpers.getTemplate(tempData,function(err,footerString){
         if(!err && headerString){
           // Add them all together
           var fullString = headerString+str+footerString;
@@ -244,17 +250,18 @@ helpers.addUniversalTemplates = function(str,templateData,callback){
 helpers.interpolate = function(str,templateData){
   str = typeof(str) == 'string' && str.length > 0 ? str : '';
   templateData = typeof(templateData) == 'object' && templateData !== null ? templateData : {};
+  var tempData = JSON.parse(JSON.stringify(templateData));
 
   // Add the templateGlobals to the data object, prepending their key name with "global."
   for(var keyName in config.templateGlobals){
      if(config.templateGlobals.hasOwnProperty(keyName)){
-      templateData['global.'+keyName] = config.templateGlobals[keyName] // done 3 times
+      tempData['global.'+keyName] = config.templateGlobals[keyName] // done 3 times
      }
   }
   // For each key in the data object, insert its value into the string at the corresponding placeholder
-  for(var key in templateData){
-     if(templateData.hasOwnProperty(key) && typeof(templateData[key] == 'string')){
-      str = str.replace('{'+key+'}',templateData[key]);
+  for(var key in tempData){
+     if(tempData.hasOwnProperty(key) && typeof(tempData[key] == 'string')){
+      str = str.replace('{'+key+'}',tempData[key]);
      }
   }
   return str;
@@ -276,5 +283,6 @@ helpers.getStaticAsset = function(fileName,callback){ // callback(false,data);
     callback('A valid file name was not specified');
   }
 };
+
 // Export the module
 module.exports = helpers;

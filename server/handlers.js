@@ -24,7 +24,7 @@ handlers.template = function(data,callback){ // callback(200,str,'html')
     helpers.getTemplate(templateData,function(err,str){
       if(!err && str){
         // Add the universal header and footer
-        helpers.addUniversalTemplates(str,templateData,function(err,str){
+        helpers.addUniversalTemplates(str, templateData, function(err,str){
           if(!err && str){
             // Return that page as HTML
             callback(200,str,'html');

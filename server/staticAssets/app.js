@@ -11,6 +11,8 @@ window.onload = function(){
   app.tokenRenewalLoop();
 
   app.loadDataOnPage();
+
+  app.loadNavButtons();
 };
 
 // AJAX Client (for RESTful API)
@@ -77,6 +79,11 @@ app.client.request = function(headers,path,method,queryStringObject,payload,call
   xhr.send(payloadString);
 
 };
+
+app.loadNavButtons = function(){
+  // render only relevant nav buttons
+  console.log(document.querySelector('body').classList);
+}
 
 app.bindForm = function(){
   if(document.querySelector("form")){ // if there are forms on the page
